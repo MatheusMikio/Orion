@@ -13,5 +13,10 @@ namespace Orion.Models
         public required string Descricao { get; set; }
         [Required]
         public required ClienteModel Cliente { get; set; }
+
+        public DividaModel()
+        {
+        }
     }
-}
+
+    }

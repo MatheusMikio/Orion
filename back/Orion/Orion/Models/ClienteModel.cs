@@ -1,4 +1,4 @@
-﻿using Orion.Dtos;
+﻿using Orion.Dtos.Cliente;
 using System.ComponentModel.DataAnnotations;
 
 namespace Orion.Models
@@ -32,6 +32,10 @@ namespace Orion.Models
             Cpf = cliente.Cpf;
             DataNascimento = cliente.DataNascimento;
             Email = cliente.Email;
+        }
+
+        public ClienteModel()
+        {
         }
     }
 }

@@ -7,17 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NHibernate" Version="5.5.2" />
-    <PackageReference Include="Npgsql" Version="9.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+    <None Remove="hibernate.cfg.xml" />
+    <None Remove="Maps\ClienteModel.hbm.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Database\" />
-    <Folder Include="Repository\Interfaces\" />
-    <Folder Include="Services\Interfaces\" />
+    <Content Include="hibernate.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Maps\DividaModel.hbm.xml" />
+    <EmbeddedResource Include="Maps\ClienteModel.hbm.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NHibernate" Version="5.5.2" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping
+	xmlns="urn:nhibernate-mapping-2.2"
+	namespace="Orion.Models"
+	assembly="Orion">
+	
+	<class name="ClienteModel" lazy="false" table="clientes">
+		<id name="Id" column="id" type="long">
+			<generator class="sequence">
+				<param name="sequence">clientes_seq</param>
+			</generator>
+		</id>
+
+		<property name="Nome" type="string" length="150" />
+		<property name="Cpf" type="string" length="11" not-null="true"/>
+		<property name="DataNascimento" column="data_nascimento" type="date" not-null="true"/>
+		<property name="Email" type="string" length="255"/>
+		
+		<bag name="Dividas" lazy="false" generic="true" cascade="all-delete-orphan">
+			<key column="clienteid"/>
+			<one-to-many class="DividaModel"/>
+		</bag>
+		
+	</class>
+
+</hibernate-mapping>

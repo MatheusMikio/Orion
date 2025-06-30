@@ -1,4 +1,8 @@
 using NHibernate.Cfg;
+using Orion.Repository;
+using Orion.Repository.Interfaces;
+using Orion.Services;
+using Orion.Services.Interfaces;
 
 namespace Orion
 {
@@ -9,11 +13,14 @@ namespace Orion
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("Default");
+            builder.Services.AddScoped<IClienteService, ClienteService>();
+            builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+
+            var connectionString = builder.Configuration
+        .GetConnectionString("Default");
             builder.Services.AddSingleton(c =>
             {
-                Configuration config = new();
-                config.Configure();
+                var config = new Configuration().Configure();
                 config.DataBaseIntegration(
                     x => x.ConnectionString = connectionString
                 );

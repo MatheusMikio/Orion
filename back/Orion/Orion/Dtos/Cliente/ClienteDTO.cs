@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Orion.Dtos
+namespace Orion.Dtos.Cliente
 {
     public class ClienteDTO
     {
+        public long Id { get; set; }
         [Required]
         public required string Nome { get; set; }
         [Required]
