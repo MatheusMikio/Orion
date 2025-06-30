@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Orion.Dtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace Orion.Models
 {
@@ -11,7 +12,7 @@ namespace Orion.Models
         public required string Cpf { get; set; }
         [Required]
         public required DateTime DataNascimento { get; set; }
-        public string? Email { get; set; }
+        public string ? Email { get; set; }
         public int Idade
         {
             get

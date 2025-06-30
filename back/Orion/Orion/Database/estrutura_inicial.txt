@@ -1,0 +1,30 @@
+﻿create sequence clientes_seq;
+create sequence dividas_seq;
+
+create table orion.clientes(
+	id bigint not null default nextval('clientes_seq'),
+	nome varchar(150) not null,
+	cpf varchar(11) not null unique,
+	data_nascimento date not null,
+	email varchar(255),
+	primary key(id)
+);
+
+create index idx_clientes_nome on orion.clientes(nome);
+
+
+
+create table orion.dividas(
+	id bigint not null default nextval('dividas_seq'),
+	valor decimal(10,2) not null check(valor > 0 and valor <= 200),
+	situacao integer not null,
+	data_pagamento timestamp,
+	descricao text not null,
+	clienteid bigint not null,
+	primary key(id),
+	foreign key(clienteid) references orion.clientes(id)
+);
+
+create index idx_dividas_situacao on orion.dividas(situacao);
+create index idx_dividas_clienteid_valor on orion.dividas(clienteid, valor);
+create index idx_dividas_valor_desc on orion.dividas(valor);
