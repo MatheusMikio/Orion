@@ -1,5 +1,6 @@
 ﻿using NHibernate;
 using NHibernate.Linq;
+using Orion.Dtos.Cliente;
 using Orion.Models;
 using Orion.Repository.Interfaces;
 using System.Linq;
@@ -27,6 +28,17 @@ namespace Orion.Repository
         public IQueryable<ClienteModel> Consultar<ClienteModel>() => _session.Query<ClienteModel>();
 
         public void Incluir(ClienteModel cliente) => _session.Save(cliente);
+
+        public bool ValidaClienteUpdate(ClienteDTO cliente)
+        {
+            ClienteModel ? clienteBd = _session.Query<ClienteModel>().FirstOrDefault(c => c.Cpf == cliente.Cpf || c.Email == cliente.Email);
+
+            if (clienteBd == null) return false;
+
+            bool clienteDuplicado =  _session.Query<ClienteModel>().Any(c => (c.Cpf == cliente.Cpf || c.Email == cliente.Email) && c.Id != clienteBd.Id);
+
+            return clienteDuplicado;
+        }
 
         public void Salvar(ClienteModel cliente) => _session.Merge(cliente);
 

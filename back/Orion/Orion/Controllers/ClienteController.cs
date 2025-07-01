@@ -27,9 +27,20 @@ namespace Orion.Controllers
         [HttpPost]
         public IActionResult CreateClient([FromBody] ClienteDTO clienteDTO)
         {
-            if (_clienteService.AddCliente(clienteDTO, out List<MensagemErro> erros)) return Ok(clienteDTO);
+            if (_clienteService.AddCliente(clienteDTO, out List<MensagemErro> erros)) return CreatedAtAction(nameof(CreateClient), clienteDTO);
 
             return UnprocessableEntity(erros);
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] ClienteDTO clienteDTO)
+        {
+            ClienteDTO resultado = _clienteService.Editar(clienteDTO, out List<MensagemErro> erros);
+            if (resultado == null)
+            {
+                return NotFound(erros);
+            }
+            return Ok(resultado);
         }
     }
 }

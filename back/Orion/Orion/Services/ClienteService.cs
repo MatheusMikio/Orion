@@ -62,6 +62,37 @@ namespace Orion.Services
             return false;
         }
 
+        public ClienteDTO Editar(ClienteDTO clienteDTO, out List<MensagemErro> mensagens)
+        {
+            bool valido = ValidarUpdate(clienteDTO, out mensagens, _repository);
+            if (valido)
+            {
+                ClienteModel clienteDb = _repository.Consultar<ClienteModel>().FirstOrDefault(c => c.Cpf == clienteDTO.Cpf || c.Email == clienteDTO.Email);
+                if (clienteDb == null)
+                {
+                    mensagens.Add(new MensagemErro("Cadastro", "Cliente não encontrado para atualização."));
+                    return null;
+                }
+                clienteDb.Nome = clienteDTO.Nome;
+                clienteDb.DataNascimento = clienteDTO.DataNascimento;
+                clienteDb.Cpf = clienteDTO.Cpf;
+                clienteDb.Email = clienteDTO.Email;
+                try
+                {
+                    using var transacao = _repository.IniciarTransacao();
+                    _repository.Salvar(clienteDb);
+                    _repository.Commit();
+                    return clienteDTO;
+                }
+                catch (Exception)
+                {
+                    _repository.Rollback();
+                    mensagens.Add(new MensagemErro("Sistema", "Erro inesperado ao atualizar o cliente."));
+                    return null;
+                }
+            }
+            return null;
+        }
 
 
         public static bool Validar(ClienteDTO cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
@@ -86,15 +117,45 @@ namespace Orion.Services
                 validation = false;
             }
 
-            ClienteModel ? clienteDb = _repository.Consultar<ClienteModel>()
+            ClienteModel? clienteDb = _repository.Consultar<ClienteModel>()
                 .FirstOrDefault(c => c.Cpf == cliente.Cpf || c.Email == cliente.Email);
 
             if (clienteDb != null)
             {
-                mensagens.Add(new MensagemErro("Cadastro","Já existe um cliente com esses dados"));
+                mensagens.Add(new MensagemErro("Cadastro", "Já existe um cliente com esses dados"));
                 validation = false;
             }
 
+            return validation;
+        }
+
+        public static bool ValidarUpdate(ClienteDTO cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
+        {
+            ValidationContext validationContext = new(cliente);
+            List<ValidationResult> erros = new();
+            bool validation = Validator.TryValidateObject(cliente, validationContext, erros, true);
+            mensagens = new List<MensagemErro>();
+            foreach (ValidationResult erro in erros)
+            {
+                MensagemErro mensagem = new(
+                    erro.MemberNames.First(),
+                    erro.ErrorMessage
+                );
+                mensagens.Add(mensagem);
+            }
+            if (cliente.Idade < 18)
+            {
+                mensagens.Add(new MensagemErro("DataNascimento", "O cliente deve ser maior de idade (18 anos)."));
+                validation = false;
+            }
+
+            bool userDuplicado = _repository.ValidaClienteUpdate(cliente);
+
+            if (userDuplicado)
+            {
+                mensagens.Add(new MensagemErro("Cadastro", "Já existe um cliente com esses dados"));
+                validation = false;
+            }
             return validation;
         }
     }
