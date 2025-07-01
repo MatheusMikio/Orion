@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Orion.Dtos.Cliente;
+using Orion.Models;
 using Orion.Services.Interfaces;
 
 namespace Orion.Controllers
@@ -20,6 +22,14 @@ namespace Orion.Controllers
             if (pagina < 1 || tamanho < 1) return BadRequest("Os parâmetros 'pagina' e 'tamanho' devem ser maiores que zero.");
             
             return Ok(_clienteService.GetClientsPage(pagina, tamanho));
+        }
+
+        [HttpPost]
+        public IActionResult CreateClient([FromBody] ClienteDTO clienteDTO)
+        {
+            if (_clienteService.AddCliente(clienteDTO, out List<MensagemErro> erros)) return Ok(clienteDTO);
+
+            return UnprocessableEntity(erros);
         }
     }
 }

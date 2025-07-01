@@ -18,8 +18,39 @@ namespace Orion.Repository
             _session = sessionFactory.OpenSession();
         }
         public IQueryable<ClienteModel> GetClientsPage(int pagina, int tamanho) => _session.Query<ClienteModel>()
+            .OrderByDescending(x => x.Dividas.Sum(x => x.Valor))
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho);
-            
+
+        public ClienteModel ? GetClientId(long id) =>_session.Query<ClienteModel>().FirstOrDefault(cliente => cliente.Id == id);
+
+        public IQueryable<ClienteModel> Consultar<ClienteModel>() => _session.Query<ClienteModel>();
+
+        public void Incluir(ClienteModel cliente) => _session.Save(cliente);
+
+        public void Salvar(ClienteModel cliente) => _session.Merge(cliente);
+
+        public void Excluir(ClienteModel cliente) => _session.Delete(cliente);
+
+
+        public IDisposable IniciarTransacao()
+        {
+            var transaction = _session.BeginTransaction();
+            return transaction;
+        }
+
+        public void Rollback()
+        {
+            _session.GetCurrentTransaction()?.Rollback();
+        }
+
+        public void Commit()
+        {
+            _session.GetCurrentTransaction().Commit();
+        }
     }
+
+
+
+
 }

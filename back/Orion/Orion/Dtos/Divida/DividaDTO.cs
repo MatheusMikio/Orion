@@ -9,7 +9,7 @@ namespace Orion.Dtos.Divida
         public Status Situacao { get; set; }
         public DateTime? DataPagamento { get; set; }
         [Required]
-        public required string Descricao { get; set; }
+        public string Descricao { get; set; }
         public long ClienteId { get; set; }
     }
 }
