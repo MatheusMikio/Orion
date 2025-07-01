@@ -4,6 +4,7 @@ namespace Orion.Dtos.Cliente
 {
     public class ClienteDTO
     {
+
         [Required]
         public required string Nome { get; set; }
         [Required]

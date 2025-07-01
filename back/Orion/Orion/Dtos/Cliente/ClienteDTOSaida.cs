@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Orion.Dtos
 {
-    public class ClienteDTOSaida
+    public class  ClienteDTOSaida
     {
         public long Id { get; set; }
         [Required]
@@ -15,5 +15,16 @@ namespace Orion.Dtos
         public required DateTime DataNascimento { get; set; }
         public string ? Email { get; set; }
         public IList<DividaDTOSaida> Dividas { get; set; } = new List<DividaDTOSaida>();
+        public int Idade
+        {
+            get
+            {
+                int anoAtual = DateTime.Today.Year;
+                int idade = anoAtual - DataNascimento.Year;
+                DateTime aniversario = DateTime.Today.AddYears(-idade);
+                if (DataNascimento > aniversario) idade--;
+                return idade;
+            }
+        }
     }
 }

@@ -38,6 +38,28 @@ namespace Orion.Services
             });
         }
 
+        public List<ClienteDTOSaida> Consultar(string pesquisa)
+        {
+            IQueryable<ClienteModel> clientesDb = _repository.Consultar<ClienteModel>()
+                .Where(c => c.Nome.Contains(pesquisa));
+            return clientesDb.Select(cliente => new ClienteDTOSaida
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                Cpf = cliente.Cpf,
+                DataNascimento = cliente.DataNascimento,
+                Email = cliente.Email,
+                Dividas = cliente.Dividas.Select(divida => new DividaDTOSaida
+                {
+                    Id = divida.Id,
+                    Valor = divida.Valor,
+                    Situacao = divida.Situacao,
+                    DataPagamento = divida.DataPagamento,
+                    Descricao = divida.Descricao
+                }).ToList()
+            }).ToList();
+        }
+
         public bool AddCliente(ClienteDTO clienteDTO, out List<MensagemErro> mensagens)
         {
             bool valido = Validar(clienteDTO, out mensagens, _repository);
@@ -62,12 +84,13 @@ namespace Orion.Services
             return false;
         }
 
-        public ClienteDTO Editar(ClienteDTO clienteDTO, out List<MensagemErro> mensagens)
+        public ClienteDTOUpdate Editar(ClienteDTOUpdate clienteDTO, out List<MensagemErro> mensagens)
         {
             bool valido = ValidarUpdate(clienteDTO, out mensagens, _repository);
             if (valido)
             {
-                ClienteModel clienteDb = _repository.Consultar<ClienteModel>().FirstOrDefault(c => c.Cpf == clienteDTO.Cpf || c.Email == clienteDTO.Email);
+                ClienteModel clienteDb = _repository.GetClientId(clienteDTO.Id);
+
                 if (clienteDb == null)
                 {
                     mensagens.Add(new MensagemErro("Cadastro", "Cliente não encontrado para atualização."));
@@ -94,6 +117,38 @@ namespace Orion.Services
             return null;
         }
 
+        public ClienteDTOSaida Excluir(long id)
+        {
+            ClienteModel? clienteDb = _repository.GetClientId(id);
+            if (clienteDb == null) return null;
+            try
+            {
+                using var transacao = _repository.IniciarTransacao();
+                _repository.Excluir(clienteDb);
+                _repository.Commit();
+                return new ClienteDTOSaida
+                {
+                    Id = clienteDb.Id,
+                    Nome = clienteDb.Nome,
+                    Cpf = clienteDb.Cpf,
+                    DataNascimento = clienteDb.DataNascimento,
+                    Email = clienteDb.Email,
+                    Dividas = clienteDb.Dividas.Select(divida => new DividaDTOSaida
+                    {
+                        Id = divida.Id,
+                        Valor = divida.Valor,
+                        Situacao = divida.Situacao,
+                        DataPagamento = divida.DataPagamento,
+                        Descricao = divida.Descricao
+                    }).ToList()
+                };
+            }
+            catch (Exception)
+            {
+                _repository.Rollback();
+                return null;
+            }
+        }
 
         public static bool Validar(ClienteDTO cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
         {
@@ -129,7 +184,7 @@ namespace Orion.Services
             return validation;
         }
 
-        public static bool ValidarUpdate(ClienteDTO cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
+        public static bool ValidarUpdate(ClienteDTOUpdate cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
         {
             ValidationContext validationContext = new(cliente);
             List<ValidationResult> erros = new();
