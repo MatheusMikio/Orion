@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Orion.Dtos;
 using Orion.Dtos.Divida;
 using Orion.Models;
+using Orion.Services;
 using Orion.Services.Interfaces;
 
 namespace Orion.Controllers
@@ -29,6 +31,26 @@ namespace Orion.Controllers
             if (_dividaService.AddDivida(dividaDTO, out List<MensagemErro> erros)) return CreatedAtAction(nameof(CreateDivida), dividaDTO);
 
             return UnprocessableEntity(erros);
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] DividaDTOUpdate divida)
+        {
+            DividaDTOSaida dividaAtualizada = _dividaService.UpdateDivida(divida, out List<MensagemErro> erros);
+
+            if (dividaAtualizada == null) return UnprocessableEntity(erros);
+
+            return Ok(dividaAtualizada);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
+        {
+            DividaDTOSaida ? divida= _dividaService.Excluir(id);
+
+            if (divida == null) return NotFound("Cliente não encontrado.");
+
+            return Ok(divida);
         }
     }
 }

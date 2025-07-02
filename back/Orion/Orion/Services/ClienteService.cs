@@ -119,7 +119,7 @@ namespace Orion.Services
 
         public ClienteDTOSaida Excluir(long id)
         {
-            ClienteModel? clienteDb = _repository.GetClientId(id);
+            ClienteModel ? clienteDb = _repository.GetClientId(id);
             if (clienteDb == null) return null;
             try
             {

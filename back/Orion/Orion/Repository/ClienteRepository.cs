@@ -15,7 +15,6 @@ namespace Orion.Repository
 
         public ClienteRepository(ISessionFactory sessionFactory)
         {
-
             _sessionFactory = sessionFactory;
             _session = sessionFactory.OpenSession();
         }
@@ -38,24 +37,13 @@ namespace Orion.Repository
         public bool ValidaClienteUpdate(ClienteDTOUpdate cliente) => _session.Query<ClienteModel>()
             .Any(c => (c.Cpf == cliente.Cpf || c.Email == cliente.Email) && c.Id != cliente.Id);
 
+
         public IDisposable IniciarTransacao()
         {
             var transaction = _session.BeginTransaction();
             return transaction;
         }
-
-        public void Rollback()
-        {
-            _session.GetCurrentTransaction()?.Rollback();
-        }
-
-        public void Commit()
-        {
-            _session.GetCurrentTransaction().Commit();
-        }
+        public void Rollback() => _session.GetCurrentTransaction()?.Rollback();
+        public void Commit() => _session.GetCurrentTransaction().Commit();
     }
-
-
-
-
 }

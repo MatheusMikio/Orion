@@ -34,15 +34,7 @@ namespace Orion.Repository
             var transaction = _session.BeginTransaction();
             return transaction;
         }
-
-        public void Rollback()
-        {
-            _session.GetCurrentTransaction()?.Rollback();
-        }
-
-        public void Commit()
-        {
-            _session.GetCurrentTransaction().Commit();
-        }
+        public void Rollback() => _session.GetCurrentTransaction()?.Rollback();
+        public void Commit() => _session.GetCurrentTransaction().Commit();
     }
 }

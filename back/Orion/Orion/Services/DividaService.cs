@@ -68,6 +68,70 @@ namespace Orion.Services
             return false;
         }
 
+        public DividaDTOSaida UpdateDivida(DividaDTOUpdate divida, out List<MensagemErro> erros)
+        {
+            bool valido = Validar(divida, out erros, _dividaRepository, _clienteRepository);
+
+            if (valido)
+            {
+                DividaModel ? dividaModel = _dividaRepository.GetDividaId(divida.Id);
+                if (dividaModel == null)
+                {
+                    erros.Add(new MensagemErro("Divida", "Dívida não encontrada."));
+                    return null;
+                }
+                dividaModel.Valor = divida.Valor;
+                dividaModel.Descricao = divida.Descricao;
+                dividaModel.DataPagamento = divida.DataPagamento;
+                dividaModel.Situacao = divida.Situacao;
+                try
+                {
+                    using var transacao = _dividaRepository.IniciarTransacao();
+                    _dividaRepository.Salvar(dividaModel);
+                    _dividaRepository.Commit();
+                    return new DividaDTOSaida
+                    {
+                        Id = dividaModel.Id,
+                        Valor = dividaModel.Valor,
+                        Situacao = dividaModel.Situacao,
+                        DataPagamento = dividaModel.DataPagamento,
+                        Descricao = dividaModel.Descricao
+                    };
+                }
+                catch (Exception)
+                {
+                    erros.Add(new MensagemErro("Sistema", "Erro inesperado ao atualizar a dívida."));
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public DividaDTOSaida Excluir(long id)
+        {
+            DividaModel ? dividaDb = _dividaRepository.GetDividaId(id);
+            if (dividaDb == null) return null;
+            try
+            {
+                using var transacao = _dividaRepository.IniciarTransacao();
+                _dividaRepository.Excluir(dividaDb);
+                _dividaRepository.Commit();
+                return new DividaDTOSaida
+                {
+                    Id = dividaDb.Id,
+                    Valor = dividaDb.Valor,
+                    Situacao = dividaDb.Situacao,
+                    DataPagamento = dividaDb.DataPagamento,
+                    Descricao = dividaDb.Descricao
+                };
+            }
+            catch (Exception)
+            {
+                _dividaRepository.Rollback();
+                return null;
+            }
+        }
+
         public static bool Validar(DividaDTO divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
         {
             ValidationContext validationContext = new(divida);
@@ -90,6 +154,59 @@ namespace Orion.Services
             {
                 mensagens.Add(new MensagemErro("Cliente", "Cliente não encontrado."));
                 validation = false;
+                return validation;
+            }
+
+            if (string.IsNullOrEmpty(divida.Descricao))
+            {
+                mensagens.Add(new MensagemErro("Descrição", "A descrição da dívida é obrigatório."));
+                validation = false;
+                return validation;
+            }
+
+            if (divida.Valor > 200 || divida.Valor  <= 0)
+            {
+                mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
+                validation = false;
+            }
+            if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
+            {
+                mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
+                validation = false;
+            }
+            return validation;
+        }
+        public static bool Validar(DividaDTOUpdate divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
+        {
+            ValidationContext validationContext = new(divida);
+            List<ValidationResult> erros = new();
+            bool validation = Validator.TryValidateObject(divida, validationContext, erros, true);
+
+            ClienteModel cliente = clienteRepository.GetClientId(divida.ClienteId);
+            DividaModel ? dividaExistente = dividarepository.GetDividaId(divida.Id);
+
+            mensagens = new List<MensagemErro>();
+            foreach (ValidationResult erro in erros)
+            {
+                MensagemErro mensagem = new(
+                    erro.MemberNames.First(),
+                    erro.ErrorMessage
+                );
+                mensagens.Add(mensagem);
+            }
+
+            if (cliente == null)
+            {
+                mensagens.Add(new MensagemErro("Cliente", "Cliente não encontrado."));
+                validation = false;
+                return validation;
+            }
+
+            if (dividaExistente == null)
+            {
+                mensagens.Add(new MensagemErro("Divida", "Dívida não encontrada."));
+                validation = false;
+                return validation;
             }
 
             if (string.IsNullOrEmpty(divida.Descricao))
@@ -98,18 +215,20 @@ namespace Orion.Services
                 validation = false;
             }
 
-            if (divida.Valor > 200 || divida.Valor  <= 0)
+            if (divida.Valor > 200 || divida.Valor <= 0)
             {
                 mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
                 validation = false;
             }
-            if (cliente?.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
+            ;
+            if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente && d.Id != divida.Id).Sum(d => d.Valor) + divida.Valor > 200)
             {
                 mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
                 validation = false;
             }
+
             return validation;
         }
-
     }
+
 }

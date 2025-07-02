@@ -38,10 +38,9 @@ namespace Orion.Controllers
         public IActionResult Put([FromBody] ClienteDTOUpdate clienteDTO)
         {
             ClienteDTOUpdate resultado = _clienteService.Editar(clienteDTO, out List<MensagemErro> erros);
-            if (resultado == null)
-            {
-                return UnprocessableEntity(erros); 
-            }
+
+            if (resultado == null) return UnprocessableEntity(erros);
+   
             return Ok(resultado);
         }
 
@@ -54,6 +53,5 @@ namespace Orion.Controllers
 
             return Ok(cliente);
         }
-
     }
 }
