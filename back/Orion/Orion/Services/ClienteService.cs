@@ -11,7 +11,7 @@ namespace Orion.Services
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _repository;
-        public ClienteService(IClienteRepository clienteRepository)
+        public ClienteService(IClienteRepository clienteRepository, IDividaRepository dividaRepository)
         {
             _repository = clienteRepository;
         }

@@ -15,6 +15,8 @@ namespace Orion
             // Add services to the container.
             builder.Services.AddScoped<IClienteService, ClienteService>();
             builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+            builder.Services.AddScoped<IDividaService, DividaService>();
+            builder.Services.AddScoped<IDividaRepository, DividaRepository>();
 
             var connectionString = builder.Configuration
         .GetConnectionString("Default");

@@ -9,8 +9,7 @@ namespace Orion.Models
         public decimal Valor { get; set; }
         public Status Situacao { get; set; }
         public DateTime ? DataPagamento { get; set; }
-        [Required]
-        public required string Descricao { get; set; }
+        public string Descricao { get; set; }
         [Required]
         public required ClienteModel Cliente { get; set; }
 

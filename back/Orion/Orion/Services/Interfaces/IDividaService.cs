@@ -1,0 +1,11 @@
+﻿using Orion.Dtos.Divida;
+using Orion.Models;
+
+namespace Orion.Services.Interfaces
+{
+    public interface IDividaService
+    {
+        IQueryable<DividaDTOSaida> GetDividasPage(int pagina, int tamanho);
+        bool AddDivida(DividaDTO dividaDTO, out List<MensagemErro> erros);
+    }
+}

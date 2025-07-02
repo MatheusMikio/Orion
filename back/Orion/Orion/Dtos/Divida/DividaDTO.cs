@@ -8,7 +8,6 @@ namespace Orion.Dtos.Divida
         public decimal Valor { get; set; }
         public Status Situacao { get; set; }
         public DateTime? DataPagamento { get; set; }
-        [Required]
         public string Descricao { get; set; }
         public long ClienteId { get; set; }
     }

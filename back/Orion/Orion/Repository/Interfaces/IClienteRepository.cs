@@ -12,8 +12,8 @@ namespace Orion.Repository.Interfaces
         public bool ValidaClienteUpdate(ClienteDTOUpdate cliente);
         public void Excluir(ClienteModel cliente);
         public ClienteModel GetClientId(long id);
+        
         IQueryable<ClienteModel> Consultar<ClienteModel>();
-
         public IDisposable IniciarTransacao();
         public void Commit();
         public void Rollback();
