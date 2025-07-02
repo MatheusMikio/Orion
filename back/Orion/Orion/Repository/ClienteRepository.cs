@@ -19,9 +19,11 @@ namespace Orion.Repository
             _session = sessionFactory.OpenSession();
         }
         public IQueryable<ClienteModel> GetClientsPage(int pagina, int tamanho) => _session.Query<ClienteModel>()
-            .OrderByDescending(x => x.Dividas.Sum(x => x.Valor))
+            .OrderByDescending(x => x.Dividas.Any())
+            .ThenByDescending(x => x.Dividas.Sum(d => d.Valor))
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho);
+
 
         public ClienteModel ? GetClientId(long id) =>_session.Query<ClienteModel>().FirstOrDefault(cliente => cliente.Id == id);
 

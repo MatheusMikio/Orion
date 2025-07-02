@@ -7,11 +7,14 @@ namespace Orion.Models
     {
         public long Id { get; set; }
         [Required]
+        [RegularExpression(@"^[A-Z][a-zA-Z\s]+$", ErrorMessage = "Nome inválido. Deve começar com letra maiúscula e conter apenas letras e espaços.")]
         public string Nome { get; set; }
         [Required]
+        [RegularExpression(@"^(?!^(\d)\1{10}$)\d{11}$)", ErrorMessage = "CPF inválido. Deve conter 11 dígitos e não pode ser uma sequência repetida.")]
         public  string Cpf { get; set; }
         [Required]
         public DateTime DataNascimento { get; set; }
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "E-mail inválido.")]
         public string ? Email { get; set; }
         public int Idade
         {
@@ -29,7 +32,6 @@ namespace Orion.Models
         public ClienteModel(ClienteDTO cliente)
         {
             Nome = cliente.Nome;
-            Cpf = cliente.Cpf;
             DataNascimento = cliente.DataNascimento;
             Email = cliente.Email;
         }

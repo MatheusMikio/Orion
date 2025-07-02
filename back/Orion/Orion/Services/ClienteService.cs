@@ -69,6 +69,7 @@ namespace Orion.Services
                 try
                 {
                     ClienteModel cliente = new(clienteDTO);
+                    cliente.Cpf = RemoverMascaraCpf(clienteDTO.Cpf);
                     _repository.IniciarTransacao();
                     _repository.Incluir(cliente);
                     _repository.Commit();
@@ -98,7 +99,7 @@ namespace Orion.Services
                 }
                 clienteDb.Nome = clienteDTO.Nome;
                 clienteDb.DataNascimento = clienteDTO.DataNascimento;
-                clienteDb.Cpf = clienteDTO.Cpf;
+                clienteDb.Cpf = RemoverMascaraCpf(clienteDTO.Cpf);
                 clienteDb.Email = clienteDTO.Email;
                 try
                 {
@@ -156,14 +157,12 @@ namespace Orion.Services
             List<ValidationResult> erros = new();
             bool validation = Validator.TryValidateObject(cliente, validationContext, erros, true);
 
-            mensagens = new List<MensagemErro>();
-            foreach (ValidationResult erro in erros)
+            mensagens = erros.Select(erro => new MensagemErro(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            if (!ValidarCPF_Legivel(cliente.Cpf))
             {
-                MensagemErro mensagem = new(
-                    erro.MemberNames.First(),
-                    erro.ErrorMessage
-                );
-                mensagens.Add(mensagem);
+                mensagens.Add(new MensagemErro("Cpf", "CPF inválido."));
+                validation = false;
             }
 
             if (cliente.Idade < 18)
@@ -183,21 +182,66 @@ namespace Orion.Services
 
             return validation;
         }
+        public static bool ValidarCPF_Legivel(string cpf)
+        {
+            ReadOnlySpan<char> cpfSpan = cpf;
+            Span<int> d = stackalloc int[11]; 
+            int count = 0;
+            foreach (char c in cpfSpan)
+            {
+                if (char.IsDigit(c))
+                {
+                    if (count >= 11) return false;
+                    d[count++] = c - '0';
+                }
+            }
+
+            if (count != 11) return false;
+
+            bool todosIguais = true;
+            for (int i = 1 ; i < 11 ; i++) { if (d[i] != d[0]) { todosIguais = false; break; } }
+            if (todosIguais) return false;
+
+            static int CalcularDigitoVerificador(ReadOnlySpan<int> digitos)
+            {
+                int soma = 0;
+                int multiplicador = digitos.Length + 1;
+                for (int i = 0 ; i < digitos.Length ; i++)
+                {
+                    soma += digitos[i] * (multiplicador - i);
+                }
+                int resto = soma % 11;
+                return (resto < 2) ? 0 : 11 - resto;
+            }
+
+            int dv1 = CalcularDigitoVerificador(d.Slice(0, 9));
+
+            if (d[9] != dv1) return false;
+
+            int dv2 = CalcularDigitoVerificador(d.Slice(0, 10));
+            return d[10] == dv2;
+        }
+        private static string RemoverMascaraCpf(string cpf)
+        {
+            return new string(cpf.Where(char.IsDigit).ToArray());
+        }
+
+
 
         public static bool ValidarUpdate(ClienteDTOUpdate cliente, out List<MensagemErro> mensagens, IClienteRepository _repository)
         {
             ValidationContext validationContext = new(cliente);
             List<ValidationResult> erros = new();
             bool validation = Validator.TryValidateObject(cliente, validationContext, erros, true);
-            mensagens = new List<MensagemErro>();
-            foreach (ValidationResult erro in erros)
+
+            mensagens = erros.Select(erro => new MensagemErro(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            if (!ValidarCPF_Legivel(cliente.Cpf))
             {
-                MensagemErro mensagem = new(
-                    erro.MemberNames.First(),
-                    erro.ErrorMessage
-                );
-                mensagens.Add(mensagem);
+                mensagens.Add(new MensagemErro("Cpf", "CPF inválido."));
+                validation = false;
             }
+
             if (cliente.Idade < 18)
             {
                 mensagens.Add(new MensagemErro("DataNascimento", "O cliente deve ser maior de idade (18 anos)."));
