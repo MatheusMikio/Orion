@@ -1,11 +1,22 @@
 :root{
   --cor-principal-1: #2C3E50;
   --cor-principal-2: #34495E;
-  --cor-destaque-1: #27AE60;
+  --cor-destaque-1: #34ec81;
   --cor-destaque-2: #F39C12;
   --cor-neutra-1: #ECF0F1;
   --cor-neutra-2: #BDC3C7;
   --cor-texto-claro: #FFFFFF;
   --cor-texto-escuro: #2C3E50;
   --cor-erro: #E74C3C;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body{
+  background-color: var(--cor-neutra-1);
 }
