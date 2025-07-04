@@ -4,7 +4,10 @@
     flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
-    width: 100vw;
+    /* width: 100%; */
+    position: sticky;
+    z-index: 10;
+    top: 0;
 
     & img{
         width: 120px;
@@ -23,7 +26,6 @@
             & li{
                 margin-right: 1em;
             
-
                 & a{
                     color: var(--cor-texto-claro);
                     text-decoration: none; 
@@ -33,10 +35,9 @@
                     transition: color .7s ease;
                     }
                 }
-
-                
             }
         }
+
         & input{
             border: none;
             padding: 2.5px;
