@@ -1,0 +1,18 @@
+.btn{
+    background-color: var(--cor-destaque-2);
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 3px;
+}
+
+a{
+    text-decoration: none;
+    color: var(--cor-texto-escuro);
+
+    &:hover{
+        background-color: var(--cor-principal-1);
+        color: var(--cor-destaque-1);
+        transition: background-color 1s ease;
+        transition: color .5s ease;
+    }
+}

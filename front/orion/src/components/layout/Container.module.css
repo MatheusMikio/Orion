@@ -1,11 +1,5 @@
 .container{
-    max-width: 1300px;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
+    max-width: 1200px;
     margin: 0 auto;
-}
-
-.min-height{
-    min-height: 75%;
+    height: 80vh;
 }

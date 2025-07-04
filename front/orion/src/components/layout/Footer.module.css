@@ -1,0 +1,28 @@
+.footer{
+    color: white;
+    background-color: var(--cor-principal-1);
+    padding: 1em;
+    text-align: center;
+    width: 100vw;
+    font-size: 1.2em;
+
+    & ul{
+        display: flex;
+        justify-content: center;
+        list-style: none;
+
+        & li{
+            margin: 0 1em;
+        }
+    }
+
+    & a{
+        font-size: 1.3em;
+        color: white;
+
+        &:hover{
+            color: var(--cor-destaque-1);
+            transition: color 1s ease;
+        }
+    }
+}

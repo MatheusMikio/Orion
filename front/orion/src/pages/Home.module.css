@@ -1,0 +1,17 @@
+.home_container{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--cor-texto-escuro);
+    font-size: 1.3em;
+    height: 30%;
+
+    & span{
+        color: var(--cor-destaque-2);
+    }
+
+    & p{
+        color: var(--cor-principal-2);
+    }
+}
