@@ -9,10 +9,10 @@ export default function ClientCardComponent({client}){
                 <li><span>CPF:</span> {client.cpf}</li>
                 <li><span>Email:</span> {client.email}</li>
                 <li><span>Idade:</span> {client.idade}</li>
-                <li><span>Valor Total:</span> {client.totalDivida}</li>
+                <li><span>Valor Total:</span> {client.totalDivida.toLocaleString('pt-BR',{ style : 'currency', currency: 'BRL'})}</li>
             </ul>
             <div>
-                <LinkButton text="VER MAIS" to={`clientes/${client.id}`} customClass={styles.btn}/>
+                <LinkButton text="VER MAIS" to={`${client.id}`} customClass={styles.btn}/>
             </div>
         </div>
     )
