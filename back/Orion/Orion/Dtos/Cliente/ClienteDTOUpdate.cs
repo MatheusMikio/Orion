@@ -13,7 +13,6 @@ public class ClienteDTOUpdate
     [RegularExpression(@"^(?!^(\d)\1{2}\.\1{3}\.\1{3}-\1{2}$)\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF inválido. Deve estar no formato 000.000.000-00 e não pode ser uma sequência repetida.")]
     public required string Cpf { get; set; }
 
-
     [Required(ErrorMessage = "A data de nascimento é obrigatória.")]
     public required DateTime DataNascimento { get; set; }
 

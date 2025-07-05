@@ -169,6 +169,22 @@ namespace Orion.Services
                 mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
                 validation = false;
             }
+
+            if (divida.Situacao == Status.Pago)
+            {
+                if (divida.DataPagamento == null) 
+                {
+                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
+                    validation = false;
+                }
+
+                if (divida.DataPagamento > DateTime.Now)
+                {
+                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
+                    validation = false;
+                }
+
+            }
             if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
             {
                 mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
