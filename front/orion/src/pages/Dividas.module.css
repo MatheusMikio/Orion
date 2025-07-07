@@ -1,10 +1,28 @@
-.client_container{
+.divida_header{
+    padding: 3px 5px;
+    margin-left: 25px;
+    background-color: var(--cor-principal-2);
+    border-radius: 0 0 5px 5px;
+    color: white;
+
+    h1{
+        font-family: 'Open Sans', sans-serif;
+
+        span{
+            font-family: "Inter";
+        }
+    }
+
+    
+}
+
+.divida_container{
     display: flex;
     height: 100;
     flex-flow: row wrap;
     justify-content: space-between;
 }
-.client_footer {
+.divida_footer {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -13,7 +31,7 @@
     align-items: end;
     color: white;
     font-size: 1.1em;
-    padding: 2px;
+    padding: 2px 7px;
     background-color: var(--cor-principal-1);
     border-radius: 3px 0 0 0;
 

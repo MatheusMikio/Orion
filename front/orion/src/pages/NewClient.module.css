@@ -1,0 +1,11 @@
+.container{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 50%;
+    margin: 20px auto;
+    border-radius: 10px;
+    background-color: rgba(70, 70, 70, 0.473); 
+    padding: 7px;
+    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.473);
+}

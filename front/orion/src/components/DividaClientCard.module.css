@@ -1,0 +1,76 @@
+.card{
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    margin: 2em 0 2em 1.5em;
+    background-color: var(--cor-neutra-2);
+    width: 300px;
+    padding: 1.3em;
+    border-radius: 10px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.521);
+
+    & ul{
+        list-style: none;
+
+        & li{
+            font-family: "Inter";
+            font-size: 1.2em;
+            margin: 2px 0;
+        }
+
+        & span{
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+        }
+    }
+
+    & .btns{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2px;
+    }
+}
+
+.excluir{ 
+    background-color: var(--cor-erro);
+    color: white;
+    &:hover{
+        background-color: #ff1c03;
+        color: black;
+        transition: color .6s ease;
+    }
+}
+
+.editar{
+    background-color: var(--cor-destaque-2);
+    color: white;
+    
+    &:hover{
+        background-color: #ff9f06;
+        color: black;
+        transition: color .5s ease;
+    }
+}
+
+.pagar{
+    background-color: var(--cor-destaque-1);
+    color: black;
+
+    &:hover{
+        background-color: var(--cor-principal-1);
+        color: var(--cor-destaque-1);
+        transition: background-color 1s ease;
+        transition: color .5s ease;
+    }
+}
+
+.pendente{
+    background-color: var(--cor-destaque-2);
+    color: white;
+    
+    &:hover{
+        background-color: #ff9f06;
+        color: black;
+        transition: color .5s ease;
+    }
+}

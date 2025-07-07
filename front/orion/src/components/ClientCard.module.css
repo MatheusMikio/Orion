@@ -1,7 +1,10 @@
 .card{
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
     margin: 2em 0 2em 1.5em;
     background-color: var(--cor-neutra-2);
-    width: 350px;
+    width: 370px;
     padding: 1.2em;
     border-radius: 10px;
     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.521);
@@ -18,20 +21,18 @@
 
         & span{
             font-weight: 700;
-            color:  #1e3a8a;
+            color: var(--cor-texto-escuro);
         }
     }
-    
-    
 }
 
 .btn{
-        font-family: "Inter";
-        display: flex;
-        justify-content: center;
-        background-color: var(--cor-principal-1);
-        color: white;
-        padding: 10px;
-        border-radius: 7px;
-        margin-top: .5em;
-    }
+    font-family: "Inter";
+    display: flex;
+    justify-content: center;
+    background-color: var(--cor-principal-1);
+    color: white;
+    padding: 10px;
+    border-radius: 7px;
+    margin-top: .5em;
+}

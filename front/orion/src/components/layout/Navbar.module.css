@@ -4,7 +4,6 @@
     flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
-    /* width: 100%; */
     position: sticky;
     z-index: 10;
     top: 0;
@@ -25,6 +24,19 @@
 
             & li{
                 margin-right: 1em;
+
+                & .createLink{
+                    background-color: var(--cor-destaque-2);
+                    color: black;
+                    padding: 5px;
+                    border-radius: 3px;
+                    transition: background-color 2s ease;
+
+                    &:hover{
+                        background-color: transparent;
+                        color: var(--cor-destaque-1);
+                    }
+                }
             
                 & a{
                     color: var(--cor-texto-claro);
@@ -51,7 +63,7 @@
         & svg{
             padding: 4px;
             background-color: white;
-            height: 1.2em;
+            height: 1.4em;
             width: 1.4em;
             border-left: 1px solid black;
             border-radius: 0 5px 5px 0;

@@ -6,7 +6,7 @@ export default function HomeView(){
         <div className={styles.home_container}>
             <h1>Bem - vindo ao <span>Orion</span></h1>
             <p>Gerencie as dívidas dos seus clientes.</p>
-            <LinkButton to="/newclient" text="Criar Cliente"/>
+            <LinkButton to="/novocliente" text="Criar Cliente"/>
         </div>
     )
 }
