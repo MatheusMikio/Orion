@@ -159,7 +159,9 @@ namespace Orion.Services
 
             mensagens = erros.Select(erro => new MensagemErro(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (!ValidarCPF_Legivel(cliente.Cpf))
+            string cpfSemMascara = RemoverMascaraCpf(cliente.Cpf);
+
+            if (!ValidarCPF_Legivel(cpfSemMascara))
             {
                 mensagens.Add(new MensagemErro("Cpf", "CPF inválido."));
                 validation = false;
@@ -172,7 +174,7 @@ namespace Orion.Services
             }
 
             ClienteModel? clienteDb = _repository.Consultar<ClienteModel>()
-                .FirstOrDefault(c => c.Cpf == cliente.Cpf || c.Email == cliente.Email);
+                .FirstOrDefault(c => c.Cpf == cpfSemMascara || c.Email == cliente.Email);
 
             if (clienteDb != null)
             {
@@ -182,6 +184,7 @@ namespace Orion.Services
 
             return validation;
         }
+
         public static bool ValidarCPF_Legivel(string cpf)
         {
             ReadOnlySpan<char> cpfSpan = cpf;
@@ -236,7 +239,9 @@ namespace Orion.Services
 
             mensagens = erros.Select(erro => new MensagemErro(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (!ValidarCPF_Legivel(cliente.Cpf))
+            string cpfSemMascara = RemoverMascaraCpf(cliente.Cpf);
+
+            if (!ValidarCPF_Legivel(cpfSemMascara))
             {
                 mensagens.Add(new MensagemErro("Cpf", "CPF inválido."));
                 validation = false;
