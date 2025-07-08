@@ -6,6 +6,7 @@ namespace Orion.Services.Interfaces
     public interface IDividaService
     {
         IQueryable<DividaDTOSaida> GetDividasPage(int pagina, int tamanho);
+        public DividaDTOSaida GetDividaId(long id);
         bool AddDivida(DividaDTO dividaDTO, out List<MensagemErro> erros);
 
         DividaDTOSaida UpdateDivida(DividaDTOUpdate divida, out List<MensagemErro> erros);

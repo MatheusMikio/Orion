@@ -25,6 +25,16 @@ namespace Orion.Controllers
             return  Ok(_dividaService.GetDividasPage(pagina, tamanho));
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetDividaId(long id)
+        {
+            DividaDTOSaida? divida = _dividaService.GetDividaId(id);
+
+            if (divida == null) return NotFound("Divida não encontrada.");
+
+            return Ok(divida);
+        }
+
         [HttpPost]
         public IActionResult CreateDivida([FromBody] DividaDTO dividaDTO)
         {

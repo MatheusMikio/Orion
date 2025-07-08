@@ -38,6 +38,30 @@ namespace Orion.Services
             });
         }
 
+        public ClienteDTOSaida GetClienteId(long id)
+        {
+            ClienteModel clientedb = _repository.GetClientId(id);
+
+            if (clientedb == null) return null;
+
+            return new ClienteDTOSaida
+            {
+                Id = clientedb.Id,
+                Nome = clientedb.Nome,
+                Cpf = clientedb.Cpf,
+                DataNascimento = clientedb.DataNascimento,
+                Email = clientedb.Email,
+                Dividas = clientedb.Dividas.Select(divida => new DividaDTOSaida
+                {
+                    Id = divida.Id,
+                    Valor = divida.Valor,
+                    Situacao = divida.Situacao,
+                    DataPagamento = divida.DataPagamento,
+                    Descricao = divida.Descricao
+                }).ToList()
+            };
+        }
+
         public List<ClienteDTOSaida> Consultar(string pesquisa)
         {
             IQueryable<ClienteModel> clientesDb = _repository.Consultar<ClienteModel>()

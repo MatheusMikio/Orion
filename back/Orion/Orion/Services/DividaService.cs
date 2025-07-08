@@ -31,6 +31,22 @@ namespace Orion.Services
             });
         }
 
+        public DividaDTOSaida GetDividaId(long id)
+        {
+            DividaModel? divida = _dividaRepository.GetDividaId(id);
+
+            if (divida == null) return null;
+
+            return new DividaDTOSaida
+            {
+                Id = divida.Id,
+                Valor = divida.Valor,
+                Situacao = divida.Situacao,
+                DataPagamento = divida.DataPagamento,
+                Descricao = divida.Descricao
+            };
+        }
+
         public bool AddDivida(DividaDTO dividaDTO, out List<MensagemErro> erros)
         {
             bool valido = Validar(dividaDTO, out erros, _dividaRepository, _clienteRepository);
@@ -48,8 +64,8 @@ namespace Orion.Services
                     DividaModel divida = new()
                     {
                         Valor = dividaDTO.Valor,
-                        Situacao = Status.Pendente,
-                        DataPagamento = null,
+                        Situacao = dividaDTO.Situacao,
+                        DataPagamento = dividaDTO.DataPagamento,
                         Descricao = dividaDTO.Descricao,
                         Cliente = cliente
                     };
@@ -183,13 +199,17 @@ namespace Orion.Services
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
                     validation = false;
                 }
-
             }
-            if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
+            else
             {
-                mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
-                validation = false;
+                if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
+                {
+                    mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
+                    validation = false;
+                }
             }
+
+           
             return validation;
         }
         public static bool Validar(DividaDTOUpdate divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)

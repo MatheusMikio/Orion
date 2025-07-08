@@ -26,6 +26,16 @@ namespace Orion.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetClientId(long id)
+        {
+            ClienteDTOSaida? cliente = _clienteService.GetClienteId(id);
+
+            if (cliente == null) return NotFound("Cliente não encontrado.");
+
+            return Ok(cliente);
+        }
+
         [HttpPost]
         public IActionResult CreateClient([FromBody] ClienteDTO clienteDTO)
         {
