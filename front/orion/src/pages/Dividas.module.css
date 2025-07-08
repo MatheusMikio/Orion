@@ -21,6 +21,12 @@
     height: 100;
     flex-flow: row wrap;
     justify-content: space-between;
+
+    h2{
+        margin: 10px auto;
+        font-size: 1.8em;
+        color: var(--cor-texto-escuro);
+    }
 }
 .divida_footer {
     position: fixed;

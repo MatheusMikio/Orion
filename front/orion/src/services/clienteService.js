@@ -23,6 +23,26 @@ export async function getClients(pesquisa){
   }
 }
 
+export async function getClientId(id){
+  try{
+    const response = await fetch(`${urlApi}/api/Cliente/${id}`, {
+    method: "GET"
+    });
+
+    let dados = await response.json();
+    return{
+      status: response.status,
+      data: dados
+    }
+  }
+  catch{
+    return{
+      status: 500,
+      data: null
+    }
+  }
+}
+
 // export async function cadastrarCliente(cliente) {
 //   try {
 //     const response = await fetch(`${urlApi}/api/Cliente`, {

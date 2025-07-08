@@ -23,9 +23,14 @@ export default function ClientesView(){
     return(
         <>
         <div className={styles.client_container}>
-            {clients.map((client) =>(
-                <ClientCardComponent key={client.id} client={client}/>
-            ))}
+            {clients.length > 0 ? (
+                clients.map((client) =>(
+                    <ClientCardComponent key={client.id} client={client}/>
+                ))
+            ) : (
+                <h2>Nenhum cliente encontrado!</h2>
+            )
+            }
         </div>
         <div className={styles.client_footer}>
             <h3>Total das dividas:</h3>

@@ -3,6 +3,12 @@
     height: 100;
     flex-flow: row wrap;
     justify-content: space-between;
+
+    & h2{
+        margin: 10px auto;
+        font-size: 1.8em;
+        color: var(--cor-texto-escuro);
+    }
 }
 .client_footer {
     position: fixed;
@@ -13,7 +19,7 @@
     align-items: end;
     color: white;
     font-size: 1.1em;
-    padding: 2px;
+    padding: 2px 7px;
     background-color: var(--cor-principal-1);
     border-radius: 3px 0 0 0;
 

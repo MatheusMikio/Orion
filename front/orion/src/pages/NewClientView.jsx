@@ -18,7 +18,6 @@ export default function NewClientView(){
             dataNascimento: new Date(formData.get("dataNascimento")),
             email: formData.get("email")
         }
-        console.log(cliente)
 
         const response = await cadastrarCliente(cliente)
 

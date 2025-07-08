@@ -1,34 +1,53 @@
+import { useState, useEffect } from "react";
 import FormDivida from "../components/forms/FormDivida";
 import styles from "./NewClient.module.css"
+import { getClients } from "../services/clienteService";
+import { criarDivida } from "../services/dividaService";
+import { useNavigate } from "react-router-dom";
 
-const clientes = [
-  { id: 1, nome: "Ana Silva" },
-  { id: 2, nome: "Bruno Costa" },
-  { id: 3, nome: "Carla Souza" },
-  { id: 4, nome: "Diego Martins" },
-  { id: 5, nome: "Eduarda Lima" },
-  { id: 6, nome: "Felipe Rocha" },
-  { id: 7, nome: "Gabriela Nunes" },
-  { id: 8, nome: "Henrique Alves" },
-  { id: 9, nome: "Isabela Torres" },
-  { id: 10, nome: "João Pedro" },
-  { id: 11, nome: "Karina Mendes" },
-  { id: 12, nome: "Lucas Ribeiro" },
-  { id: 13, nome: "Mariana Duarte" },
-  { id: 14, nome: "Natália Freitas" },
-  { id: 15, nome: "Otávio Pinto" },
-  { id: 16, nome: "Paula Ferreira" },
-  { id: 17, nome: "Ricardo Lima" },
-  { id: 18, nome: "Sabrina Teixeira" },
-  { id: 19, nome: "Tiago Barros" },
-  { id: 20, nome: "Vanessa Monteiro" },
-];
 
 export default function NovaDividaView(){
-    return (
+
+  const navigate = useNavigate();
+  const [erros, setErros] = useState([])
+  const [clients, setClients] = useState([]);
+    const fetchData = async () =>{
+        const response = await getClients();
+        
+        if (response.status === 200) setClients(response.data);
+    }
+    
+
+    useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    let formData = new FormData(e.target);
+    const divida = {
+      valor: Number(formData.get("valor")),
+      situacao: Number(formData.get("situacao")),
+      DataPagamento: formData.get("dataPagamento") ? new Date(formData.get("dataPagamento")) : null,
+      descricao: formData.get("descricao"),
+      ClienteId: Number(formData.get("clienteId"))
+    }
+    console.log(divida)
+
+    const response = await criarDivida(divida)
+
+    if (response.status === 201) navigate("/dividas")
+    
+    else{
+      if (response.status == 422) setErros(response.data)
+    }
+    
+  }
+
+  return (
     <div className={styles.container}>
         <h1>Criar Divida</h1>  
-        <FormDivida clientes={clientes} />
+        <FormDivida clientes={clients} handleSubmit={submitForm}/>
     </div>
     )
 }
