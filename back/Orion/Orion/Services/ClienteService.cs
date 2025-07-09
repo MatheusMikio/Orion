@@ -51,7 +51,9 @@ namespace Orion.Services
                 Cpf = clientedb.Cpf,
                 DataNascimento = clientedb.DataNascimento,
                 Email = clientedb.Email,
-                Dividas = clientedb.Dividas.Select(divida => new DividaDTOSaida
+                Dividas = clientedb.Dividas.OrderBy(divida => divida.Situacao)
+                .ThenByDescending(divida => divida.Valor)
+                .Select(divida => new DividaDTOSaida
                 {
                     Id = divida.Id,
                     Valor = divida.Valor,
