@@ -2,36 +2,28 @@
     width: 90%;
     text-align: center;
 
-    & button{
-        font-size: 1.2em;
-        background-color: var(--cor-principal-1);
-        color: var(--cor-texto-claro);
-        padding: 5px;
-        border: none;
-        border-radius: 5px;
-        margin-bottom: 7px;
-        cursor: pointer;
-        transition: color .7s ease;
+    & .btns{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
 
-        &:hover{
-            color: var(--cor-destaque-1);
+    & .select{
+        display: flex;
+        flex-flow: column nowrap;
+        margin: .8em 0;
+
+        & label{
+            text-align: start;
+            margin-bottom: .4em;
+            font-weight: bold;
+        }
+
+        & select{
+            padding: 0.7em;
+            border-radius: 5px;
         }
     }
 }
 
-.select{
-    display: flex;
-    flex-flow: column nowrap;
-    margin: .8em 0;
-
-    & label{
-        text-align: start;
-        margin-bottom: .4em;
-        font-weight: bold;
-    }
-
-    & select{
-        padding: 0.7em;
-        border-radius: 5px;
-    }
-}

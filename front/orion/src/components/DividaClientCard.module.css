@@ -34,43 +34,44 @@
 .excluir{ 
     background-color: var(--cor-erro);
     color: white;
+    transition: color .5s ease, background-color 1s ease;
+    
     &:hover{
         background-color: #ff1c03;
         color: black;
-        transition: color .6s ease;
+        
     }
 }
 
 .editar{
     background-color: var(--cor-destaque-2);
     color: white;
+    transition: color .5s ease, background-color 1s ease;
     
     &:hover{
         background-color: #ff9f06;
         color: black;
-        transition: color .5s ease;
     }
 }
 
 .pagar{
     background-color: var(--cor-destaque-1);
     color: black;
+    transition: color .5s ease, background-color 1s ease;
 
     &:hover{
         background-color: var(--cor-principal-1);
         color: var(--cor-destaque-1);
-        transition: background-color 1s ease;
-        transition: color .5s ease;
     }
 }
 
 .pendente{
-    background-color: var(--cor-destaque-2);
+    background-color: #555555;
     color: white;
+    transition: color .5s ease, background-color 1s ease;
     
     &:hover{
         background-color: #ff9f06;
         color: black;
-        transition: color .5s ease;
     }
 }

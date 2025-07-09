@@ -77,7 +77,7 @@ export async function getClientId(id){
 export async function cadastrarCliente(cliente) {
   try {
     const response = await fetch(`${urlApi}/api/Cliente`, {
-      method: "POST",
+      method: cliente.id ? "PUT" : "POST",
       headers: {
         "Content-Type": "application/json"
       },
@@ -96,3 +96,4 @@ export async function cadastrarCliente(cliente) {
     };
   }
 }
+

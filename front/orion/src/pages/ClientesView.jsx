@@ -18,8 +18,6 @@ export default function ClientesView(){
     fetchData();
   }, [fetchData]);
 
-
-
     return(
         <>
         <div className={styles.client_container}>

@@ -10,12 +10,10 @@
 a{
     text-decoration: none;
     color: var(--cor-principal-1);
-    
+    transition: background-color .5s ease, color 1s ease;
 
     &:hover{
         background-color: var(--cor-principal-1);
         color: var(--cor-destaque-1);
-        transition: background-color 1s ease;
-        transition: color .5s ease;
     }
 }

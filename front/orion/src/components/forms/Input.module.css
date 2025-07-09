@@ -13,6 +13,7 @@
         padding: .7em;
         border-radius: 5px;
         border: none;
+        min-width: 90px;
 
         &::placeholder{
             color: var(--cor-neutra-2);
@@ -40,4 +41,19 @@
         -webkit-appearance: none;
     }
 
+    & input[type=button]{
+        font-size: 1.1em;
+        background-color: var(--cor-erro);
+        color: var(--cor-texto-claro);
+        padding: .7em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: color .5s ease, background-color 1s ease;
+
+        &:hover{
+            background-color: #ff1c03;
+            color: black;
+        }
+    }
 }

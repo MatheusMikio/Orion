@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FormDivida from "../components/forms/FormDivida";
 import styles from "./NewClient.module.css"
 import { getClients } from "../services/clienteService";
-import { criarDivida } from "../services/dividaService";
+import { salvarDivida } from "../services/dividaService";
 import { useNavigate } from "react-router-dom";
 
 
@@ -34,7 +34,7 @@ export default function NovaDividaView(){
     }
     console.log(divida)
 
-    const response = await criarDivida(divida)
+    const response = await salvarDivida(divida)
 
     if (response.status === 201) navigate("/dividas")
     
