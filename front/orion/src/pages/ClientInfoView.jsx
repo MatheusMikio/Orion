@@ -3,8 +3,11 @@ import styles from "./Dividas.module.css"
 import { useParams } from "react-router-dom";
 import { getClientId } from "../services/clienteService";
 import { useEffect, useState } from "react";
-import { getDividaId, salvarDivida } from "../services/dividaService";
+import { getDividaId, salvarDivida, apagarDivida} from "../services/dividaService";
 import FormDividaUpdate from "../components/forms/formDividaUpdate"
+import { IoMdClose } from "react-icons/io";
+
+
 
 export default function ClientInfoView() {
     const [showModal, setShowModal] = useState(false);
@@ -12,6 +15,10 @@ export default function ClientInfoView() {
     const { clientId } = useParams();
     const [client, setClient] = useState(null);
     const [message, setMessage] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
+    const [showMessage, setShowMessage] = useState(false)
+    const [showDelete, setShowDelete] = useState(false)
+    const [dividaDelete, setDividaDelete] = useState(null)
 
     async function toggleDivida(dividaId) {
         let response = await getDividaId(dividaId);
@@ -29,7 +36,9 @@ export default function ClientInfoView() {
         response = await salvarDivida(dividaUpdate);
 
         if (response.status === 200) {
+            setStatusMessage("success");
             setMessage("Dívida atualizada com sucesso!");
+            setShowMessage(true)
 
             const updatedClient = await getClientId(clientId);
             if (updatedClient.status === 200) {
@@ -37,7 +46,9 @@ export default function ClientInfoView() {
             }
         } 
         else if (response.status === 422) {
+            setStatusMessage("error");
             setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem} `);
+            setShowMessage(true)
         }
     }
 
@@ -54,17 +65,42 @@ export default function ClientInfoView() {
         }
         
         const response = await salvarDivida(divida)
-
+        
         if (response.status === 200) {
+            setStatusMessage("success");
             setMessage("Dívida atualizada com sucesso!");
             setShowModal(false)
+            setShowMessage(true)
             const updatedClient = await getClientId(clientId);
             if (updatedClient.status === 200) {
                 setClient(updatedClient.data);
             }
         } 
         else if (response.status === 422) {
-            setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem} `);
+            setStatusMessage("error");
+            setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem}`);
+            setShowMessage(true)
+        }
+    }
+
+    const apagaDivida = async () => {
+        const response = await apagarDivida(dividaDelete)
+        console.log(response)
+        if (response.status === 200){
+            setStatusMessage("success");
+            setMessage("Divida apagada com sucesso!");
+            setShowDelete(false);
+            setShowMessage(true)
+
+            const updatedClient = await getClientId(clientId);
+            if (updatedClient.status === 200) {
+                setClient(updatedClient.data);
+            }
+            else if (response.status === 404) {
+                setStatusMessage("error");
+                setMessage("Erro ao apagar a dívida, detalhes: Divida não encontrada");
+                setShowMessage(true)
+            }
         }
     }
 
@@ -78,12 +114,25 @@ export default function ClientInfoView() {
 
     return (
         <>
+            {showDelete && (
+                <div className={styles.delete}>
+                    <div className={styles.deleteContent}>
+                        <h2>Excluir Divida</h2>
+                        <div>
+                            <p>Tem certeza que deseja excluir esta divida?</p>
+                            <button onClick={() => setShowDelete(false)} className={styles.btnCancel}>Cancelar</button>
+                            <button onClick={() => apagaDivida()} className={styles.btnConfirm}>Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className={styles.divida_header}>
                 <h1>Cliente: <span>{client ? client.nome : ""}</span></h1>
             </div>
-            {message && (
-                <div className={styles.message}>
+            {message && showMessage && (
+                <div className={`${styles.message} ${statusMessage === 'success' ? styles.success : styles.error}`}>
                     <p>{message}</p>
+                    <IoMdClose onClick={() => {setShowMessage(false)}}/>
                 </div>
             )}
 
@@ -93,6 +142,7 @@ export default function ClientInfoView() {
                 ) : client.dividas.length > 0 ? (
                     client.dividas.map((divida) => (
                         <DividaClientCardComponent key={divida.id} divida={divida}
+                            onExcluir={() =>{setDividaDelete(divida.id) ; setShowDelete(true)}}
                             onEditar={() => {setSelectedDivida(divida) ; setShowModal(true)}}
                             onToggle={() => toggleDivida(divida.id)}
                         />

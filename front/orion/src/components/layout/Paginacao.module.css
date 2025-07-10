@@ -1,0 +1,19 @@
+.paginacao{
+    text-align: center;
+    padding: 20px 0;
+
+    & button{
+        background-color: var(--cor-principal-1);
+        color: white;
+        padding: 3px;
+        border-radius: 7px;
+        font-size: 1.02em;
+        margin: 0 5px;
+        transition: color .5s ease;
+
+        &:hover{
+            color: var(--cor-destaque-1);
+            cursor: pointer;
+        }
+    }
+}

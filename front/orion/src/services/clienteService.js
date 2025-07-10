@@ -1,9 +1,9 @@
 const urlApi = "https://localhost:7214";
 
 
-export async function getClients(pesquisa){
+export async function getClients(pagina = 1, tamanho = 10){
   try{
-    const response = await fetch(`${urlApi}/api/Cliente?pesquisa=${pesquisa || ""}`, {
+    const response = await fetch(`${urlApi}/api/Cliente?pagina=${pagina}&tamanho=${tamanho}`, {
       method: "GET"
     });
 

@@ -1,6 +1,5 @@
 .divida_header{
     padding: 3px 5px;
-    /* margin-left: 25px; */
     background-color: var(--cor-principal-2);
     border-radius: 0 0 5px 5px;
     color: white;
@@ -14,26 +13,62 @@
     }
 }
 
-.message{
-    background-color: antiquewhite;
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
     display: flex;
-    text-align: center;
-    justify-content: space-evenly;
-    margin: 0 auto;
+    align-items: center;
+    gap: 5px;
+
+    & svg{
+        cursor: pointer;
+    }
+}
+.success {
+    background-color: var(--cor-destaque-1);
+    color: var(--cor-principal-1);
+    
+    & svg{
+        color: red;
+        font-size: 1.5em;
+    }
+}
+.error {
+    background-color: var(--cor-erro);
+    color: var(--cor-texto-claro);
+
+    & svg{
+        font-size: 1.5em;
+    }
+    
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+
+    
 }
 
 .divida_container{
     display: flex;
-    height: 100;
     flex-flow: row wrap;
     justify-content: space-between;
 
-    h2{
+    & h2{
         margin: 10px auto;
         font-size: 1.8em;
         color: var(--cor-texto-escuro);
     }
 }
+
 .divida_footer {
     position: fixed;
     bottom: 0;
@@ -74,4 +109,58 @@
     border-radius: 10px;
     width: 80%;
     max-width: 500px;
+}
+
+.delete {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.deleteContent {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--cor-neutra-2);
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+}
+
+.btnCancel{
+    background-color: var(--cor-principal-1);
+    color: var(--cor-texto-claro);
+    padding: 1px 2px;
+    font-size: 1.02em;
+    border-radius: 4px;
+    margin: 7px 2px 0 0;
+    transition: color .5s ease, background-color 1s ease;
+
+    &:hover{
+        color: var(--cor-destaque-1);
+        cursor: pointer;
+    }
+}
+
+.btnConfirm{
+    background-color: var(--cor-erro);
+    color: var(--cor-texto-claro);
+    padding: 1px 2px;
+    font-size: 1.02em;
+    border-radius: 4px;
+    margin: 7px 0 0 2px;
+    transition: color .5s ease, background-color 1s ease;
+
+    &:hover{
+        color: black;
+    }
 }

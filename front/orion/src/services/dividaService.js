@@ -1,8 +1,8 @@
 const urlApi = "https://localhost:7214";
 
-export async function getDividas(pesquisa){
+export async function getDividas(pagina = 1, tamanho = 10){
     try{
-        const response = await fetch(`${urlApi}/api/Divida?pesquisa=${pesquisa || ""}`,{
+        const response = await fetch(`${urlApi}/api/Divida?pagina=${pagina}&tamanho=${tamanho}`,{
             method: "GET"
         });
 
@@ -64,5 +64,29 @@ export async function salvarDivida(divida){
             status: 500,
             data: err.message
         };
+    }
+}
+
+export async function apagarDivida(dividaId){
+    try{
+        const response = await fetch(`${urlApi}/api/Divida/${dividaId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        let dados;
+        if (response.status === 200) dados = await response.json();
+        return{
+            status: response.status,
+            data: dados
+        }
+    }
+    catch{
+        return{
+            status: 500,
+            data: null
+        }
     }
 }
