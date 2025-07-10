@@ -7,12 +7,14 @@ export default function FormDividaUpdate({handleSubmit, divida, onClose}){
 
     if (!divida) return <h1>Carregando</h1>
     const [status, setStatus] = useState(divida.situacao)
-    console.log(status)
+    console.log(divida)
 
     return(
+        
         <form className={styles.form} onSubmit={handleSubmit} autoComplete="off">
             <h2>Editar Dívida</h2>
-            <Input type="number" placeholder="R$200,00" text="Valor:" name="valor" defaultValue={divida.valor}/>
+            <input type="hidden" name="id" value={divida.id}/>
+            <Input type="number" placeholder="R$200,00" text="Valor:" name="valor" defaultValue={divida.valor} step="0.01"/>
             <div className={styles.select}>
                 <label htmlFor="situacao">Situacao:</label>
                 <select name="situacao" id="situacao" onChange={(e) => setStatus(e.target.value)} defaultValue={divida.situacao}>

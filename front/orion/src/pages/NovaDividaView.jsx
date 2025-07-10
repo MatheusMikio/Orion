@@ -32,7 +32,6 @@ export default function NovaDividaView(){
       descricao: formData.get("descricao"),
       ClienteId: Number(formData.get("clienteId"))
     }
-    console.log(divida)
 
     const response = await salvarDivida(divida)
 

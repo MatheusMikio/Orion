@@ -22,6 +22,10 @@
         &:focus{
             outline: none;
         }
+
+        &:hover{
+            cursor: pointer;
+        }
     }
 
     & input[type=submit]{
@@ -48,7 +52,6 @@
         padding: .7em;
         border: none;
         border-radius: 5px;
-        cursor: pointer;
         transition: color .5s ease, background-color 1s ease;
 
         &:hover{

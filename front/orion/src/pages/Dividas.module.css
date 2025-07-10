@@ -1,6 +1,6 @@
 .divida_header{
     padding: 3px 5px;
-    margin-left: 25px;
+    /* margin-left: 25px; */
     background-color: var(--cor-principal-2);
     border-radius: 0 0 5px 5px;
     color: white;
@@ -12,8 +12,14 @@
             font-family: "Inter";
         }
     }
+}
 
-    
+.message{
+    background-color: antiquewhite;
+    display: flex;
+    text-align: center;
+    justify-content: space-evenly;
+    margin: 0 auto;
 }
 
 .divida_container{

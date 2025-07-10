@@ -35,17 +35,38 @@ export default function ClientInfoView() {
             if (updatedClient.status === 200) {
                 setClient(updatedClient.data);
             }
-        } else if (response.status === 422) {
+        } 
+        else if (response.status === 422) {
             setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem} `);
         }
     }
 
     const submitForm = async (e) => {
         e.preventDefault()
-        console.log("Formulario Enviado!")
+        let formData = new FormData(e.target)
+        const divida = {
+            id: Number(formData.get("id")),
+            valor: Number(formData.get("valor")),
+            situacao: Number(formData.get("situacao")),
+            DataPagamento: formData.get("dataPagamento") ? new Date(formData.get("dataPagamento")) : null,
+            descricao: formData.get("descricao"),
+            ClienteId: clientId
+        }
+        
+        const response = await salvarDivida(divida)
+
+        if (response.status === 200) {
+            setMessage("Dívida atualizada com sucesso!");
+            setShowModal(false)
+            const updatedClient = await getClientId(clientId);
+            if (updatedClient.status === 200) {
+                setClient(updatedClient.data);
+            }
+        } 
+        else if (response.status === 422) {
+            setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem} `);
+        }
     }
-
-
 
     useEffect(() => {
         getClientId(clientId).then(response => {
@@ -60,7 +81,6 @@ export default function ClientInfoView() {
             <div className={styles.divida_header}>
                 <h1>Cliente: <span>{client ? client.nome : ""}</span></h1>
             </div>
-
             {message && (
                 <div className={styles.message}>
                     <p>{message}</p>
@@ -73,7 +93,7 @@ export default function ClientInfoView() {
                 ) : client.dividas.length > 0 ? (
                     client.dividas.map((divida) => (
                         <DividaClientCardComponent key={divida.id} divida={divida}
-                            onEditar={() => {setSelectedDivida(divida) ; setShowModal(true) }}
+                            onEditar={() => {setSelectedDivida(divida) ; setShowModal(true)}}
                             onToggle={() => toggleDivida(divida.id)}
                         />
                     ))
