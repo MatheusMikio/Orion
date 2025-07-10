@@ -16,7 +16,7 @@
 		<property name="DataNascimento" column="data_nascimento" type="date" not-null="true"/>
 		<property name="Email" type="string" length="255"/>
 		
-		<bag name="Dividas" lazy="false" generic="true" cascade="all-delete-orphan">
+		<bag name="Dividas" lazy="false" generic="true" cascade="all-delete-orphan" inverse="true">
 			<key column="clienteid"/>
 			<one-to-many class="DividaModel"/>
 		</bag>

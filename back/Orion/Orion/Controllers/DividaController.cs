@@ -58,7 +58,7 @@ namespace Orion.Controllers
         {
             DividaDTOSaida ? divida= _dividaService.Excluir(id);
 
-            if (divida == null) return NotFound("Cliente não encontrado.");
+            if (divida == null) return NotFound("Divida não encontrada.");
 
             return Ok(divida);
         }

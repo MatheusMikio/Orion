@@ -125,13 +125,19 @@ namespace Orion.Services
 
         public DividaDTOSaida Excluir(long id)
         {
-            DividaModel ? dividaDb = _dividaRepository.GetDividaId(id);
+            DividaModel? dividaDb = _dividaRepository.GetDividaId(id);
             if (dividaDb == null) return null;
+
             try
             {
                 using var transacao = _dividaRepository.IniciarTransacao();
+
+                if (dividaDb.Cliente.Dividas.Contains(dividaDb)) dividaDb.Cliente.Dividas.Remove(dividaDb);
+
                 _dividaRepository.Excluir(dividaDb);
+
                 _dividaRepository.Commit();
+
                 return new DividaDTOSaida
                 {
                     Id = dividaDb.Id,
@@ -147,6 +153,8 @@ namespace Orion.Services
                 return null;
             }
         }
+
+
 
         public static bool Validar(DividaDTO divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
         {
@@ -259,6 +267,7 @@ namespace Orion.Services
                 {
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
                     validation = false;
+                    return false;
                 }
 
                 var dataPagamentoUtc = DateTime.SpecifyKind(divida.DataPagamento.Value, DateTimeKind.Utc);
