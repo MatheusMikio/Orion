@@ -192,9 +192,13 @@ namespace Orion.Services
                 {
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
                     validation = false;
+                    return validation;
                 }
 
-                if (divida.DataPagamento > DateTime.Now)
+                DateTime dataPagamentoUtc = DateTime.SpecifyKind(divida.DataPagamento.Value, DateTimeKind.Utc);
+                DateTime agoraUtc = DateTime.UtcNow;
+
+                if (dataPagamentoUtc > agoraUtc)
                 {
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
                     validation = false;
@@ -208,7 +212,6 @@ namespace Orion.Services
                     validation = false;
                 }
             }
-
            
             return validation;
         }
@@ -219,7 +222,6 @@ namespace Orion.Services
             bool validation = Validator.TryValidateObject(divida, validationContext, erros, true);
 
             ClienteModel cliente = clienteRepository.GetClientId(divida.ClienteId);
-            DividaModel ? dividaExistente = dividarepository.GetDividaId(divida.Id);
 
             mensagens = new List<MensagemErro>();
             foreach (ValidationResult erro in erros)
@@ -238,17 +240,11 @@ namespace Orion.Services
                 return validation;
             }
 
-            if (dividaExistente == null)
-            {
-                mensagens.Add(new MensagemErro("Divida", "Dívida não encontrada."));
-                validation = false;
-                return validation;
-            }
-
             if (string.IsNullOrEmpty(divida.Descricao))
             {
                 mensagens.Add(new MensagemErro("Descrição", "A descrição da dívida é obrigatório."));
                 validation = false;
+                return validation;
             }
 
             if (divida.Valor > 200 || divida.Valor <= 0)
@@ -256,13 +252,32 @@ namespace Orion.Services
                 mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
                 validation = false;
             }
-            ;
-            if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente && d.Id != divida.Id).Sum(d => d.Valor) + divida.Valor > 200)
-            {
-                mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
-                validation = false;
-            }
 
+            if (divida.Situacao == Status.Pago)
+            {
+                if (divida.DataPagamento == null)
+                {
+                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
+                    validation = false;
+                }
+
+                var dataPagamentoUtc = DateTime.SpecifyKind(divida.DataPagamento.Value, DateTimeKind.Utc);
+                var agoraUtc = DateTime.UtcNow;
+
+                if (dataPagamentoUtc > agoraUtc)
+                {
+                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
+                    validation = false;
+                }
+            }
+            else
+            {
+                if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente && d.Id != divida.Id).Sum(d => d.Valor) + divida.Valor > 200)
+                {
+                    mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
+                    validation = false;
+                }
+            }
             return validation;
         }
     }
