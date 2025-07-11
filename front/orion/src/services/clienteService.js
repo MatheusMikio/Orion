@@ -1,9 +1,9 @@
 const urlApi = "https://localhost:7214";
 
 
-export async function getClients(pagina = 1, tamanho = 10){
+export async function getClients(pagina, tamanho, pesquisa){
   try{
-    const response = await fetch(`${urlApi}/api/Cliente?pagina=${pagina}&tamanho=${tamanho}`, {
+    const response = await fetch(`${urlApi}/api/Cliente?pagina=${pagina}&tamanho=${tamanho}&pesquisa=${pesquisa || ""}`, {
       method: "GET"
     });
 
@@ -11,6 +11,27 @@ export async function getClients(pagina = 1, tamanho = 10){
     if (response.status === 200) dados = await response.json()
     
     return {
+      status: response.status,
+      data: dados
+    }
+  }
+  catch{
+    return{
+      status: 500,
+      data: null
+    }
+  }
+}
+
+export async function getAllClients(){
+  try{
+    const response = await fetch(`${urlApi}/api/Cliente/allclients`, {
+      method: "GET"
+    })
+    let dados;
+    if (response.status === 200) dados = await response.json()
+
+    return{
       status: response.status,
       data: dados
     }
@@ -96,4 +117,3 @@ export async function cadastrarCliente(cliente) {
     };
   }
 }
-

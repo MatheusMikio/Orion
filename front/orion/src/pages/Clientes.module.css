@@ -6,9 +6,7 @@
 
     & .client_container{
     display: flex;
-    height: 100;
     flex-flow: row wrap;
-    justify-content: space-between;
 
         & h2{
             margin: 10px auto;

@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { getDividaId, salvarDivida, apagarDivida} from "../services/dividaService";
 import FormDividaUpdate from "../components/forms/formDividaUpdate"
 import { IoMdClose } from "react-icons/io";
-
+import { FaGear } from "react-icons/fa6";
+import ButtonComponent from "../components/layout/ButtonComponent";
+import FormClient from "../components/forms/FormClient";
 
 
 export default function ClientInfoView() {
@@ -19,6 +21,7 @@ export default function ClientInfoView() {
     const [showMessage, setShowMessage] = useState(false)
     const [showDelete, setShowDelete] = useState(false)
     const [dividaDelete, setDividaDelete] = useState(null)
+    const [showEditClient, setShowEditClient] = useState(false)
 
     async function toggleDivida(dividaId) {
         let response = await getDividaId(dividaId);
@@ -79,6 +82,7 @@ export default function ClientInfoView() {
         else if (response.status === 422) {
             setStatusMessage("error");
             setMessage(`Erro ao atualizar a dívida, detalhes: ${response.data[0].mensagem}`);
+            setShowModal(false)
             setShowMessage(true)
         }
     }
@@ -104,6 +108,10 @@ export default function ClientInfoView() {
         }
     }
 
+    const atualizaCliente = async () => {
+        console.log("Cliente atualizado!")
+    }
+
     useEffect(() => {
         getClientId(clientId).then(response => {
             if (response.status === 200) {
@@ -120,14 +128,34 @@ export default function ClientInfoView() {
                         <h2>Excluir Divida</h2>
                         <div>
                             <p>Tem certeza que deseja excluir esta divida?</p>
-                            <button onClick={() => setShowDelete(false)} className={styles.btnCancel}>Cancelar</button>
+                            <ButtonComponent onClick={() => setShowDelete(false)} customClass={styles.btnCancel} text="Cancelar"/>
                             <button onClick={() => apagaDivida()} className={styles.btnConfirm}>Confirmar</button>
                         </div>
                     </div>
                 </div>
             )}
+
+            {showModal && (
+                <div className={styles.modal}>
+                    <div className={styles.modalContent}>
+                        <FormDividaUpdate divida={selectedDivida} 
+                        handleSubmit={submitForm}
+                        onClose={() => setShowModal(false)}/>
+                    </div>
+                </div>
+            )}
+
+            {/* {showEditClient && (
+                <div className={styles.modal}>
+                    <div className={styles.modalContent}>
+                        {console.log(client)}
+                        <FormClient handleSubmit={atualizaCliente} cliente={client}/>
+                    </div>
+                </div>
+            )} */}
+
             <div className={styles.divida_header}>
-                <h1>Cliente: <span>{client ? client.nome : ""}</span></h1>
+                <h1>Cliente: <span>{client ? client.nome : ""}</span></h1><FaGear onClick={() => setShowEditClient(true)}/>
             </div>
             {message && showMessage && (
                 <div className={`${styles.message} ${statusMessage === 'success' ? styles.success : styles.error}`}>
@@ -161,15 +189,7 @@ export default function ClientInfoView() {
                 </div>
             )}
             
-            {showModal && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
-                        <FormDividaUpdate divida={selectedDivida} 
-                        handleSubmit={submitForm}
-                        onClose={() => setShowModal(false)}/>
-                    </div>
-                </div>
-            )}
+            
         </>
     );
 }

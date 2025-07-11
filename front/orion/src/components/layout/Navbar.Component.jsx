@@ -2,12 +2,31 @@ import logo from "../../assets/logo2.png"
 import { Link, useLocation } from "react-router-dom"
 import styles from "./Navbar.module.css"
 import { GoSearch } from "react-icons/go";
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 
 export default function NavbarComponent() {
   const { pathname } = useLocation();
-  const onClientes = pathname.startsWith("/clientes");
+  const onClientes = pathname === "/clientes" || pathname === "/clientes/";
   const onDividas  = pathname.startsWith("/dividas");
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!onClientes) return;
+
+    const timeout = setTimeout(() => {
+      if (search.trim()) {
+        navigate(`/clientes?search=${search}`);
+      } 
+      else {
+        navigate('/clientes');
+      }
+    }, 1000);
+  return () => clearTimeout(timeout);
+}, [search, navigate, onClientes]);
+
 
   return (
     <nav className={styles.navbar}>
@@ -29,8 +48,26 @@ export default function NavbarComponent() {
                 Criar Cliente
               </Link>
             </li>
-            <input type="text" placeholder="Buscar cliente..." />
-            <GoSearch />
+            <input type="search" placeholder="Buscar cliente..." value={search} onChange={(e) => setSearch(e.target.value)} 
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (search.trim()) {
+                  navigate(`/clientes?search=${search}`);
+                } else {
+                  navigate('/clientes');
+                }
+              }
+              }
+            }
+            />
+            <GoSearch onClick={() => {
+            if (search.trim()) {
+              navigate(`/clientes?search=${search}`);
+            } 
+            else {
+              navigate('/clientes');
+            }
+          }} />
             </>
           )}
           {onDividas && (

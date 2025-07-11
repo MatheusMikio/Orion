@@ -3,25 +3,29 @@ import ClientCardComponent from "../components/ClienteCardComponent";
 import { getClients } from "../services/clienteService";
 import styles from "./Clientes.module.css"
 import PaginacaoComponent from "../components/layout/PaginacaoComponent";
+import { useLocation } from "react-router-dom";
 
 
 export default function ClientesView(){
-
     const [clients, setClients] = useState([]);
     const [pagina, setPagina] = useState(1);
     const tamanho = 10;
     const [maisPaginas, setMaisPaginas] = useState(true)
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get('search') || '';
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await getClients(pagina, tamanho);
+            const response = await getClients(pagina, tamanho, searchQuery);
             if (response.status === 200){
                 setClients(response.data);
                 setMaisPaginas(response.data.length === tamanho)
             }
         };
         fetchData();
-    }, [pagina])
+        if (searchQuery) setPagina(1);
+    }, [pagina, searchQuery]);
 
     const handleAnterior = () => {
         if (pagina > 1) setPagina(pagina - 1);

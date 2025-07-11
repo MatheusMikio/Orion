@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import FormDivida from "../components/forms/FormDivida";
 import styles from "./NewClient.module.css"
-import { getClients } from "../services/clienteService";
+import { getAllClients } from "../services/clienteService";
 import { salvarDivida } from "../services/dividaService";
 import { useNavigate } from "react-router-dom";
 
@@ -11,16 +11,21 @@ export default function NovaDividaView(){
   const navigate = useNavigate();
   const [erros, setErros] = useState([])
   const [clients, setClients] = useState([]);
-    const fetchData = async () =>{
-        const response = await getClients();
-        
-        if (response.status === 200) setClients(response.data);
-    }
-    
 
-    useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const fetchData = async () =>{
+    const response = await getAllClients();
+    if (response.status === 200) setClients(response.data);
+  }
+
+  useEffect(() => {
+  const fetchData = async () => {
+    const response = await getAllClients();
+    if (response.status === 200) setClients(response.data);
+  };
+
+  fetchData();
+}, []);
+
 
   const submitForm = async (e) => {
     e.preventDefault();
