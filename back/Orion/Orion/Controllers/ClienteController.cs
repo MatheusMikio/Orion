@@ -26,6 +26,9 @@ namespace Orion.Controllers
 
         }
 
+        [HttpGet("allclients")]
+        public IActionResult GetAllClientes() => Ok(_clienteService.GetClients());
+
         [HttpGet("{id}")]
         public IActionResult GetClientId(long id)
         {

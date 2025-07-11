@@ -24,6 +24,9 @@ namespace Orion.Repository
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho);
 
+        public IQueryable<ClienteModel> GetClients() => _session.Query<ClienteModel>()
+            .OrderBy(cliente => cliente.Nome);
+
 
         public ClienteModel ? GetClientId(long id) =>_session.Query<ClienteModel>().FirstOrDefault(cliente => cliente.Id == id);
 
