@@ -5,7 +5,7 @@ O Orion é uma solução completa para gerenciar seus clientes e suas dívidas d
 1. Clique em "Criar Cliente"
 2. Preencha os dados:
    - Nome completo
-   - CPF (apenas CPFs válidos /* https://www.4devs.com.br/gerador_de_cpf */)
+   - CPF (apenas CPFs válidos https://www.4devs.com.br/gerador_de_cpf )
    - Data de nascimento
    - E-mail 
 3. Clique em "Cadastrar"
@@ -22,4 +22,4 @@ O Orion é uma solução completa para gerenciar seus clientes e suas dívidas d
 ### 3. Acompanhando Clientes
 - Visualize todas as dívidas dos clientes clicando em "Ver mais" no card
 - Marque como "Pago" quando receber o pagamento
-- Edite o cliente clicando na engrenagem ao lado
+- Edite o cliente clicando na engrenagem ao lado do nome
