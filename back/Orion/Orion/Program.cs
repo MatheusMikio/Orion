@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using NHibernate.Cfg;
 using Orion.Repository;
 using Orion.Repository.Interfaces;
@@ -19,7 +20,7 @@ namespace Orion
             builder.Services.AddScoped<IDividaRepository, DividaRepository>();
 
             var connectionString = builder.Configuration
-        .GetConnectionString("Default");
+                .GetConnectionString("Default");
             builder.Services.AddSingleton(c =>
             {
                 var config = new Configuration().Configure();
@@ -28,7 +29,6 @@ namespace Orion
                 );
                 return config.BuildSessionFactory();
             });
-
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

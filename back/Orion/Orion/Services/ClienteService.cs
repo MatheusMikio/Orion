@@ -32,6 +32,7 @@ namespace Orion.Services
                     Id = divida.Id,
                     Valor = divida.Valor,
                     Situacao = divida.Situacao,
+                    dataCriacao = divida.dataCriacao,
                     DataPagamento = divida.DataPagamento,
                     Descricao = divida.Descricao
                 }).ToList()
@@ -53,6 +54,7 @@ namespace Orion.Services
                     Id = divida.Id,
                     Valor = divida.Valor,
                     Situacao = divida.Situacao,
+                    dataCriacao = divida.dataCriacao,
                     DataPagamento = divida.DataPagamento,
                     Descricao = divida.Descricao
                 }).ToList()
@@ -79,6 +81,7 @@ namespace Orion.Services
                     Id = divida.Id,
                     Valor = divida.Valor,
                     Situacao = divida.Situacao,
+                    dataCriacao = divida.dataCriacao,
                     DataPagamento = divida.DataPagamento,
                     Descricao = divida.Descricao
                 }).ToList()
@@ -101,6 +104,7 @@ namespace Orion.Services
                     Id = divida.Id,
                     Valor = divida.Valor,
                     Situacao = divida.Situacao,
+                    dataCriacao = divida.dataCriacao,
                     DataPagamento = divida.DataPagamento,
                     Descricao = divida.Descricao
                 }).ToList()
@@ -186,6 +190,7 @@ namespace Orion.Services
                         Id = divida.Id,
                         Valor = divida.Valor,
                         Situacao = divida.Situacao,
+                        dataCriacao = divida.dataCriacao,
                         DataPagamento = divida.DataPagamento,
                         Descricao = divida.Descricao
                     }).ToList()
@@ -211,6 +216,12 @@ namespace Orion.Services
             if (!ValidarCPF_Legivel(cpfSemMascara))
             {
                 mensagens.Add(new MensagemErro("Cpf", "CPF inválido."));
+                validation = false;
+            }
+
+            if (string.IsNullOrEmpty(cliente.Nome))
+            {
+                mensagens.Add(new MensagemErro("Nome", "O nome do cliente deve ser informado."));
                 validation = false;
             }
 

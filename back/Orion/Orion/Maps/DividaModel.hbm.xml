@@ -13,6 +13,7 @@
 
 		<property name="Valor" type="decimal" not-null="true"/>
 		<property name="Situacao" not-null="true"/>
+		<property name="dataCriacao" column="data_criacao" type="DateTime" not-null="false"/>
 		<property name="DataPagamento" column="data_pagamento" type="DateTime" not-null="false"/>
 		<property name="Descricao" type="string" length="5000" not-null="true"/>
 		

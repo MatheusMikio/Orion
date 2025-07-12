@@ -26,6 +26,7 @@ namespace Orion.Services
                 Id = divida.Id,
                 Valor = divida.Valor,
                 Situacao = divida.Situacao,
+                dataCriacao = divida.dataCriacao,
                 DataPagamento = divida.DataPagamento,
                 Descricao = divida.Descricao,
             });
@@ -42,6 +43,7 @@ namespace Orion.Services
                 Id = divida.Id,
                 Valor = divida.Valor,
                 Situacao = divida.Situacao,
+                dataCriacao = divida.dataCriacao,
                 DataPagamento = divida.DataPagamento,
                 Descricao = divida.Descricao
             };
@@ -49,26 +51,20 @@ namespace Orion.Services
 
         public bool AddDivida(DividaDTO dividaDTO, out List<MensagemErro> erros)
         {
-            bool valido = Validar(dividaDTO, out erros, _dividaRepository, _clienteRepository);
+            const Status situacaoDividaCriada = Status.Pendente;
+            ClienteModel cliente = _clienteRepository.GetClientId(dividaDTO.ClienteId);
+            DividaModel divida = new()
+            {
+                Valor = dividaDTO.Valor,
+                Situacao = situacaoDividaCriada,
+                Descricao = dividaDTO.Descricao,
+                Cliente = cliente
+            };
+            bool valido = Validar(dividaDTO, divida, out erros, _dividaRepository, _clienteRepository);
             if (valido)
             {
                 try {
-                    ClienteModel cliente = _clienteRepository.GetClientId(dividaDTO.ClienteId);
-
-                    if (cliente == null)
-                    {
-                        erros.Add(new MensagemErro("Cliente", "Cliente não encontrado."));
-                        return false;
-                    }
-
-                    DividaModel divida = new()
-                    {
-                        Valor = dividaDTO.Valor,
-                        Situacao = dividaDTO.Situacao,
-                        DataPagamento = dividaDTO.DataPagamento,
-                        Descricao = dividaDTO.Descricao,
-                        Cliente = cliente
-                    };
+                    
                     using var transacao = _dividaRepository.IniciarTransacao();
                     _dividaRepository.Incluir(divida);
                     _dividaRepository.Commit();
@@ -79,27 +75,32 @@ namespace Orion.Services
                     erros.Add(new MensagemErro("Sistema", "Erro inesperado ao salvar a dívida."));
                     return false;
                 }
-                
             }
             return false;
         }
 
         public DividaDTOSaida UpdateDivida(DividaDTOUpdate divida, out List<MensagemErro> erros)
         {
-            bool valido = Validar(divida, out erros, _dividaRepository, _clienteRepository);
+            DividaModel ? dividaModel = _dividaRepository.GetDividaId(divida.Id);
+
+            if (dividaModel == null)
+            {
+                erros = new List<MensagemErro>
+                {
+                    new("Divida", "Dívida não encontrada.")
+                };
+                return null;
+            }
+
+            dividaModel.Valor = divida.Valor;
+            dividaModel.Descricao = divida.Descricao;
+            dividaModel.DataPagamento = divida.DataPagamento;
+            dividaModel.Situacao = divida.Situacao;
+
+            bool valido = Validar(divida, dividaModel, out erros, _dividaRepository, _clienteRepository);
 
             if (valido)
             {
-                DividaModel ? dividaModel = _dividaRepository.GetDividaId(divida.Id);
-                if (dividaModel == null)
-                {
-                    erros.Add(new MensagemErro("Divida", "Dívida não encontrada."));
-                    return null;
-                }
-                dividaModel.Valor = divida.Valor;
-                dividaModel.Descricao = divida.Descricao;
-                dividaModel.DataPagamento = divida.DataPagamento;
-                dividaModel.Situacao = divida.Situacao;
                 try
                 {
                     using var transacao = _dividaRepository.IniciarTransacao();
@@ -143,6 +144,7 @@ namespace Orion.Services
                     Id = dividaDb.Id,
                     Valor = dividaDb.Valor,
                     Situacao = dividaDb.Situacao,
+                    dataCriacao = dividaDb.dataCriacao,
                     DataPagamento = dividaDb.DataPagamento,
                     Descricao = dividaDb.Descricao
                 };
@@ -154,15 +156,13 @@ namespace Orion.Services
             }
         }
 
-
-
-        public static bool Validar(DividaDTO divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
+        public static bool Validar(DividaDTO dividaDTO, DividaModel divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
         {
             ValidationContext validationContext = new(divida);
             List<ValidationResult> erros = new();
             bool validation = Validator.TryValidateObject(divida, validationContext, erros, true);
 
-            ClienteModel cliente = clienteRepository.GetClientId(divida.ClienteId);
+            ClienteModel cliente = clienteRepository.GetClientId(dividaDTO.ClienteId);
 
             mensagens = new List<MensagemErro>();
             foreach (ValidationResult erro in erros)
@@ -181,55 +181,34 @@ namespace Orion.Services
                 return validation;
             }
 
-            if (string.IsNullOrEmpty(divida.Descricao))
+            if (string.IsNullOrEmpty(dividaDTO.Descricao))
             {
                 mensagens.Add(new MensagemErro("Descrição", "A descrição da dívida é obrigatório."));
                 validation = false;
                 return validation;
             }
 
-            if (divida.Valor > 200 || divida.Valor  <= 0)
+            if (dividaDTO.Valor > 200 || dividaDTO.Valor  <= 0)
             {
                 mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
                 validation = false;
             }
 
-            if (divida.Situacao == Status.Pago)
+            if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
             {
-                if (divida.DataPagamento == null) 
-                {
-                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
-                    validation = false;
-                    return validation;
-                }
-
-                DateTime dataPagamentoUtc = DateTime.SpecifyKind(divida.DataPagamento.Value, DateTimeKind.Utc);
-                DateTime agoraUtc = DateTime.UtcNow;
-
-                if (dataPagamentoUtc > agoraUtc)
-                {
-                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
-                    validation = false;
-                }
+                mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
+                validation = false;
             }
-            else
-            {
-                if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente).Sum(d => d.Valor) + divida.Valor > 200)
-                {
-                    mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
-                    validation = false;
-                }
-            }
-           
             return validation;
         }
-        public static bool Validar(DividaDTOUpdate divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
-        {
-            ValidationContext validationContext = new(divida);
-            List<ValidationResult> erros = new();
-            bool validation = Validator.TryValidateObject(divida, validationContext, erros, true);
 
-            ClienteModel cliente = clienteRepository.GetClientId(divida.ClienteId);
+        public static bool Validar(DividaDTOUpdate dividaDTO, DividaModel divida, out List<MensagemErro> mensagens, IDividaRepository dividarepository, IClienteRepository clienteRepository)
+        {
+            ValidationContext validationContext = new(dividaDTO);
+            List<ValidationResult> erros = new();
+            bool validation = Validator.TryValidateObject(dividaDTO, validationContext, erros, true);
+
+            ClienteModel cliente = clienteRepository.GetClientId(dividaDTO.ClienteId);
 
             mensagens = new List<MensagemErro>();
             foreach (ValidationResult erro in erros)
@@ -248,29 +227,34 @@ namespace Orion.Services
                 return validation;
             }
 
-            if (string.IsNullOrEmpty(divida.Descricao))
+            if (string.IsNullOrEmpty(dividaDTO.Descricao))
             {
                 mensagens.Add(new MensagemErro("Descrição", "A descrição da dívida é obrigatório."));
                 validation = false;
                 return validation;
             }
 
-            if (divida.Valor > 200 || divida.Valor <= 0)
+            if (dividaDTO.Valor > 200 || dividaDTO.Valor <= 0)
             {
                 mensagens.Add(new MensagemErro("Valor", "O valor da dívida tem que ser maior que R$0,00 e menor que R$200,00"));
                 validation = false;
             }
 
-            if (divida.Situacao == Status.Pago)
+            if (dividaDTO.Situacao == Status.Pago)
             {
-                if (divida.DataPagamento == null)
+                if (dividaDTO.DataPagamento == null)
                 {
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento é obrigatória quando a dívida está paga."));
                     validation = false;
                     return false;
                 }
+                if (dividaDTO.DataPagamento < cliente.DataNascimento || dividaDTO.DataPagamento < divida.dataCriacao)
+                {
+                    mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser anterior à data de criação da dívida ou de nascimento do cliente."));
+                    validation = false;
+                }
 
-                var dataPagamentoUtc = DateTime.SpecifyKind(divida.DataPagamento.Value, DateTimeKind.Utc);
+                var dataPagamentoUtc = dividaDTO.DataPagamento.Value.ToUniversalTime();
                 var agoraUtc = DateTime.UtcNow;
 
                 if (dataPagamentoUtc > agoraUtc)
@@ -278,10 +262,11 @@ namespace Orion.Services
                     mensagens.Add(new MensagemErro("DataPagamento", "A data de pagamento não pode ser futura."));
                     validation = false;
                 }
+
             }
             else
             {
-                if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente && d.Id != divida.Id).Sum(d => d.Valor) + divida.Valor > 200)
+                if (cliente.Dividas.Where(d => d.Situacao == Status.Pendente && d.Id != dividaDTO.Id).Sum(d => d.Valor) + dividaDTO.Valor > 200)
                 {
                     mensagens.Add(new MensagemErro("Cliente", "A soma das dividas abertas não pode ultrapassar R$200,00"));
                     validation = false;

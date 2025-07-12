@@ -8,6 +8,7 @@ namespace Orion.Models
         public long Id { get; set; }
         public decimal Valor { get; set; }
         public Status Situacao { get; set; }
+        public DateTime dataCriacao { get; set; } = DateTime.UtcNow;
         public DateTime ? DataPagamento { get; set; }
         public string Descricao { get; set; }
         [Required]
@@ -17,5 +18,4 @@ namespace Orion.Models
         {
         }
     }
-
-    }
+}
