@@ -29,7 +29,7 @@ export default function NavbarComponent() {
 
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={`${styles.navbar} ${onClientes ? styles.onClientes : ""} `}>
       <div>
         <Link to="/">
           <img src={logo} alt="Orion" />
@@ -78,7 +78,6 @@ export default function NavbarComponent() {
             </li>
           )}
         </ul>
-        
       </div>
     </nav>
   );

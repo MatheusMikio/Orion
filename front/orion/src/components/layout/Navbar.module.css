@@ -77,3 +77,9 @@
         }
     }
 }
+
+@media (max-width: 770px) {
+    .navbar.onClientes {
+        padding-bottom: 10px;
+    }
+}
