@@ -9,10 +9,10 @@
 
     h1{
         font-weight: 600;
-        font-family: 'Open Sans', sans-serif;
+        color: var(--cor-destaque-2);
 
         span{
-
+            color: white;
             font-weight: 200;
             font-family: "Inter";
         }
@@ -21,6 +21,12 @@
     & svg{
         font-size: 1.5em;
         color: var(--cor-destaque-2);
+        transition: font-size .3s ease;
+
+        &:hover{
+            cursor: pointer;
+            font-size: 1.7em;
+        }
     }
 }
 
@@ -118,7 +124,31 @@
     padding: 20px;
     border-radius: 10px;
     width: 80%;
-    max-width: 500px;
+    max-width: 550px;
+
+
+    & .erros{
+        display: flex;
+        width: 330px;
+
+        & ul{
+        display: flex;
+        height: 77%;
+        flex-flow: column;
+        list-style: none;
+        justify-content: space-around;
+        background-color: #d32f2f;
+        color: white;
+        border-radius: 8px;
+        width: 90%;
+        margin: auto auto;
+            
+            & li{
+                padding: 3px;
+            }
+        }
+    }
+    
 }
 
 .delete {
@@ -149,7 +179,7 @@
 .btnCancel{
     background-color: var(--cor-principal-1);
     color: var(--cor-texto-claro);
-    padding: 1px 2px;
+    padding: 5px 5px;
     font-size: 1.02em;
     border-radius: 4px;
     margin: 7px 2px 0 0;
@@ -164,7 +194,7 @@
 .btnConfirm{
     background-color: var(--cor-erro);
     color: var(--cor-texto-claro);
-    padding: 1px 2px;
+    padding: 5px 5px;
     font-size: 1.02em;
     border-radius: 4px;
     margin: 7px 0 0 2px;

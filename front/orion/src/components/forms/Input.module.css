@@ -32,6 +32,7 @@
         margin: 0 auto;
 
         &:hover{
+            cursor: pointer;
             background-color: var(--cor-destaque-1);
             color: var(--cor-principal-1);
         }

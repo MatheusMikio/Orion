@@ -66,14 +66,14 @@
             background-color: white;
             height: 1.4em;
             width: 1.4em;
-            /* border-left: 1px solid black; */
+            border-left: 1px solid black;
             border-radius: 0 5px 5px 0;
+            transition: padding .5s ease;
 
-            /* &:hover{
+            &:hover{
                 padding: 2px;
                 cursor: pointer;
-                transition: padding .5s ease;
-            } */
+            }
         }
     }
 }

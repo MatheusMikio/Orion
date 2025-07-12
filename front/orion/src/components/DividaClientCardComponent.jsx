@@ -11,6 +11,7 @@ export default function DividaCardComponent({divida, onExcluir, onEditar, onTogg
             <div>
                 <ul>
                     <li><span>Valor:</span> {divida.valor.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}</li>
+                    <li><span>Criada em:</span> {new Date(divida.dataCriacao).toLocaleDateString()}</li>
                     <li><span>Status:</span> {status[divida.situacao]}</li>
                     {divida.situacao === 1 && (
                         <li><span>Pago em:</span> {new Date(divida.dataPagamento).toLocaleDateString()}</li>

@@ -7,6 +7,19 @@
         justify-content: center;
         align-items: center;
         gap: 8px;
+
+        & button{
+            background-color: var(--cor-principal-1);
+            color: var(--cor-texto-claro);
+            padding: 7px 10px;
+            width: 90px;
+            transition: color .7s ease;
+
+            &:hover{
+                cursor: pointer;
+                color: var(--cor-destaque-1);
+            }
+        }
     }
 
     & .select{
@@ -26,4 +39,3 @@
         }
     }
 }
-

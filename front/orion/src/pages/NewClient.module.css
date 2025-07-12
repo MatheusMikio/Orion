@@ -8,4 +8,36 @@
     background-color: rgba(70, 70, 70, 0.473); 
     padding: 7px;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.473);
+
+    & .form{
+         display: flex;
+        justify-content: center;
+        text-align: center;
+        padding: 0 10px;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 550px;
+
+        & .erros{
+            display: flex;
+            width: 300px;
+
+            & ul{
+                display: flex;
+                height: 70%;
+                flex-flow: column;
+                list-style: none;
+                justify-content: space-evenly;
+                background-color: #d32f2f;
+                color: white;
+                border-radius: 8px;
+                width: 90%;
+                margin: 40px auto;
+                
+                & li{
+                    padding: 3px;
+                }
+            }
+        }
+    }
 }

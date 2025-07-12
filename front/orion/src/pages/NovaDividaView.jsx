@@ -12,19 +12,15 @@ export default function NovaDividaView(){
   const [erros, setErros] = useState([])
   const [clients, setClients] = useState([]);
 
-  const fetchData = async () =>{
-    const response = await getAllClients();
-    if (response.status === 200) setClients(response.data);
-  }
 
   useEffect(() => {
-  const fetchData = async () => {
-    const response = await getAllClients();
-    if (response.status === 200) setClients(response.data);
-  };
+    const fetchData = async () => {
+      const response = await getAllClients();
+      if (response.status === 200) setClients(response.data);
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
 
   const submitForm = async (e) => {
@@ -32,8 +28,6 @@ export default function NovaDividaView(){
     let formData = new FormData(e.target);
     const divida = {
       valor: Number(formData.get("valor")),
-      situacao: Number(formData.get("situacao")),
-      DataPagamento: formData.get("dataPagamento") ? new Date(formData.get("dataPagamento")) : null,
       descricao: formData.get("descricao"),
       ClienteId: Number(formData.get("clienteId"))
     }
@@ -42,16 +36,25 @@ export default function NovaDividaView(){
 
     if (response.status === 201) navigate("/dividas")
     
-    else{
-      if (response.status == 422) setErros(response.data)
-    }
-    
+    else if (response.status == 422) setErros(response.data)
+      
   }
 
   return (
     <div className={styles.container}>
         <h1>Criar Divida</h1>  
-        <FormDivida clientes={clients} handleSubmit={submitForm}/>
+        <div className={styles.form}>
+          <FormDivida clientes={clients} handleSubmit={submitForm}/>
+          {erros.length > 0 && (
+              <div className={styles.erros}>
+                  <ul>
+                      {erros.map((erro, index) => (
+                          <li key={index}>{erro.mensagem}</li>
+                      ))}
+                  </ul>
+              </div>
+            )}
+        </div>
     </div>
-    )
+  )
 }

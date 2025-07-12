@@ -1,15 +1,14 @@
 import DividaClientCardComponent from "../components/DividaClientCardComponent"
 import styles from "./Dividas.module.css"
 import { useParams } from "react-router-dom";
-import { getClientId } from "../services/clienteService";
+import { cadastrarCliente, getClientId } from "../services/clienteService";
 import { useEffect, useState } from "react";
 import { getDividaId, salvarDivida, apagarDivida} from "../services/dividaService";
 import FormDividaUpdate from "../components/forms/formDividaUpdate"
 import { IoMdClose } from "react-icons/io";
 import { FaGear } from "react-icons/fa6";
 import ButtonComponent from "../components/layout/ButtonComponent";
-import FormClient from "../components/forms/FormClient";
-
+import FormClientUpdate from "../components/forms/FormClientUpdate";
 
 export default function ClientInfoView() {
     const [showModal, setShowModal] = useState(false);
@@ -22,6 +21,7 @@ export default function ClientInfoView() {
     const [showDelete, setShowDelete] = useState(false)
     const [dividaDelete, setDividaDelete] = useState(null)
     const [showEditClient, setShowEditClient] = useState(false)
+    const [erros, setErros] =useState([])
 
     async function toggleDivida(dividaId) {
         let response = await getDividaId(dividaId);
@@ -100,17 +100,41 @@ export default function ClientInfoView() {
             if (updatedClient.status === 200) {
                 setClient(updatedClient.data);
             }
-            else if (response.status === 404) {
+        }
+        else if (response.status === 404) {
                 setStatusMessage("error");
                 setMessage("Erro ao apagar a dívida, detalhes: Divida não encontrada");
                 setShowMessage(true)
             }
-        }
     }
 
-    const atualizaCliente = async () => {
-        console.log("Cliente atualizado!")
-    }
+    const atualizaCliente = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        const cliente = {
+            id: Number(formData.get("id")),
+            nome: formData.get("nome"),
+            cpf: formData.get("cpf"),
+            dataNascimento: new Date(formData.get("dataNascimento")),
+            email: formData.get("email")
+        };
+
+        const response = await cadastrarCliente(cliente)
+
+        if (response.status === 200){
+            setStatusMessage("success")
+            setMessage("Cliente atualizado com sucesso!")
+            setShowEditClient(false)
+            setShowMessage(true)
+
+            const updatedClient = await getClientId(clientId);
+            if (updatedClient.status === 200) {
+                setClient(updatedClient.data);
+            }
+        }
+        else if (response.status === 422) setErros(response.data)
+    } 
 
     useEffect(() => {
         getClientId(clientId).then(response => {
@@ -129,7 +153,7 @@ export default function ClientInfoView() {
                         <div>
                             <p>Tem certeza que deseja excluir esta divida?</p>
                             <ButtonComponent onClick={() => setShowDelete(false)} customClass={styles.btnCancel} text="Cancelar"/>
-                            <button onClick={() => apagaDivida()} className={styles.btnConfirm}>Confirmar</button>
+                            <ButtonComponent onClick={() => apagaDivida()} customClass={styles.btnConfirm}text="Confirmar"/>
                         </div>
                     </div>
                 </div>
@@ -145,14 +169,22 @@ export default function ClientInfoView() {
                 </div>
             )}
 
-            {/* {showEditClient && (
+            {showEditClient && (
                 <div className={styles.modal}>
                     <div className={styles.modalContent}>
-                        {console.log(client)}
-                        <FormClient handleSubmit={atualizaCliente} cliente={client}/>
+                        <FormClientUpdate handleSubmit={atualizaCliente} client={client} onClose={() => {setShowEditClient(false) ; ; setErros([])} }/>
+                        {erros.length > 0 && (
+                        <div className={styles.erros}>
+                            <ul>
+                                {erros.map((erro, index) => (
+                                    <li key={index}>{erro.mensagem}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        )}
                     </div>
                 </div>
-            )} */}
+            )}
 
             <div className={styles.divida_header}>
                 <h1>Cliente: <span>{client ? client.nome : ""}</span></h1><FaGear onClick={() => setShowEditClient(true)}/>
